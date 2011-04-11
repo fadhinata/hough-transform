@@ -15,9 +15,6 @@ public class ApplicationFrame extends JFrame {
 	public static final int SINGLE_IMAGE_VIEW = 0;
 	public static final int DUAL_VIEW = 1;
 
-	private ImagePanel sourceImage = null;
-	private ImagePanel workImage = null;
-
 	private JMenuBar menuBar;
 	private EditPanel editPanel;
 	private Container contentPane;
@@ -29,7 +26,7 @@ public class ApplicationFrame extends JFrame {
 
 	private int viewMode = SINGLE_IMAGE_VIEW;
 	private static Dimension imagePrefferedSize;
-	private JSplitPane splitPane;
+
 
 
 
@@ -53,9 +50,17 @@ public class ApplicationFrame extends JFrame {
 
 	}
 
-	public ImagePanel getWorkImage() {
-		return workImage;
+
+	public ImageFrame getImageFrame() {
+		return imageFrame;
 	}
+
+
+	public void setImageFrame(ImageFrame imageFrame) {
+		this.imageFrame = imageFrame;
+	}
+
+
 	public JInternalFrame getHistogramFrame() {
 		return histogramFrame;
 	}
@@ -89,14 +94,15 @@ public class ApplicationFrame extends JFrame {
 		contentPane.add(editPanel, BorderLayout.LINE_END);
 		editPanel.setVisible(true);
 		
-		workImage = new ImagePanel();
-		sourceImage = new ImagePanel();
+	
 		
 		histogramFrame = new JInternalFrame("Histogram");
 		histogramFrame.setClosable(true);
+		histogramFrame.setDefaultCloseOperation(HIDE_ON_CLOSE);
+		histogramFrame.setResizable(true);
 		contentPane.add(histogramFrame);
-		histogramFrame.setSize(300, 300);
-		histogramFrame.setMaximumSize(new Dimension(300, 300));
+		histogramFrame.setSize(200, 200);
+//		histogramFrame.setMaximumSize(new Dimension(200, 200));
 
 		
 		menuBar = new AppMenuBar(this);
