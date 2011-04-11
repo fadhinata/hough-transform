@@ -32,7 +32,7 @@ public class EditPanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				appFrame.getWorkImage().adjustContrast();
+				appFrame.getImageFrame().getWorkImage().adjustContrast();
 			}
 	
 		   });
@@ -45,12 +45,10 @@ public class EditPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				appFrame.getHistogramFrame().setVisible(true);
 
-				PlanarImage hist = HistogramPanel.getHistogram(appFrame.getWorkImage().getSource());
-				DisplayJAI display = new DisplayJAI();
-				display.set(hist);
-//				
-				appFrame.getHistogramFrame().add(display);
-//				appFrame.getHistogramFrame().setSize(display.getSize());
+				
+				PlanarImage img = appFrame.getImageFrame().getWorkImage().getSource();
+							
+				appFrame.getHistogramFrame().add(new HistogramPanel(img ));
 				appFrame.getHistogramFrame().setLocation(0, 0);
 				appFrame.getHistogramFrame().revalidate();
 				appFrame.getHistogramFrame().repaint();
