@@ -7,15 +7,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 
-import javax.media.jai.Histogram;
-import javax.media.jai.RenderedOp;
+import javax.media.jai.PlanarImage;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
-import javax.media.jai.*;
-import com.sun.media.jai.widget.*;
+
+import com.sun.media.jai.widget.DisplayJAI;
 @SuppressWarnings("serial")
 public class EditPanel extends JPanel {
 	private final ApplicationFrame appFrame;

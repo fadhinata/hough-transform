@@ -1,29 +1,25 @@
 package circledetection.gui;
 
-import jai.tutorial.contrast.Contrast;
-import jai.tutorial.contrast.ImageDisplay;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.renderable.ParameterBlock;
-import java.awt.image.renderable.RenderableImage;
-import java.util.Vector;
 
-import javax.media.jai.*;
+import javax.media.jai.ImageLayout;
+import javax.media.jai.Interpolation;
+import javax.media.jai.JAI;
+import javax.media.jai.LookupTableJAI;
+import javax.media.jai.PlanarImage;
+import javax.media.jai.RasterFactory;
+import javax.media.jai.RenderedOp;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-import com.sun.media.jai.widget.*;
+import com.sun.media.jai.widget.DisplayJAI;
 @SuppressWarnings("serial")
 public class ImagePanel extends JPanel implements MouseListener{
 
