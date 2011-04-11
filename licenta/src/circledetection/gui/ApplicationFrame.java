@@ -9,7 +9,6 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuBar;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 @SuppressWarnings("serial")
 public class ApplicationFrame extends JFrame {
@@ -25,7 +24,7 @@ public class ApplicationFrame extends JFrame {
 //	private Toolkit tk;
 
 	private String filePath;
-	private JInternalFrame imageFrame;
+	private ImageFrame imageFrame;
 	private JInternalFrame histogramFrame;
 
 	private int viewMode = SINGLE_IMAGE_VIEW;
@@ -80,6 +79,7 @@ public class ApplicationFrame extends JFrame {
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
+	
 	public void close() {
 		System.exit(0);
 	}
@@ -92,24 +92,12 @@ public class ApplicationFrame extends JFrame {
 		workImage = new ImagePanel();
 		sourceImage = new ImagePanel();
 		
-		imageFrame = new JInternalFrame("Image");
 		histogramFrame = new JInternalFrame("Histogram");
 		histogramFrame.setClosable(true);
 		contentPane.add(histogramFrame);
 		histogramFrame.setSize(300, 300);
 		histogramFrame.setMaximumSize(new Dimension(300, 300));
 
-//		imageFrame.setPreferredSize(imagePrefferedSize);
-		imageFrame.setVisible(true);
-		
-		contentPane.add(imageFrame);
-
-//		JScrollPane scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//		imageFrame.setContentPane(scrollPane);
-//	    scrollPane.setViewportView(workImage);
-//	    scrollPane.setPreferredSize(imagePrefferedSize);
-	  
-//		contentPane.add(imageFrame);
 		
 		menuBar = new AppMenuBar(this);
 		this.setJMenuBar(menuBar);
@@ -118,83 +106,17 @@ public class ApplicationFrame extends JFrame {
 
 	public void showImage() {
 		
+		if(imageFrame!= null)
+			imageFrame.dispose();
 		if (viewMode == SINGLE_IMAGE_VIEW)
-			showSingleView();
+			imageFrame =  SingleView.getInstance((JDesktopPane)contentPane,filePath);
 		else
-			showDualView();
+			imageFrame = DualView.getInstance((JDesktopPane)contentPane, filePath);
 
-	}
-
-	private void showDualView() {
-		if(filePath==null)
-			return;
-		
-		try {
-			imageFrame.remove(workImage);
-//			imageFrame.repaint();
-	
-		} catch (Exception e) {
-		}
-		
-		if (!sourceImage.hasContent()) {
-			sourceImage.createImage(filePath);
-			sourceImage.display();
-
-		}
-		if (!workImage.hasContent())
-		{
-			workImage.createImage(filePath);
-			workImage.convertToGrayScale();
-			workImage.display();
-			
-		}	
-		
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-					sourceImage, workImage);
-//		contentPane.getSize();
-		workImage.setVisible(true);
-		workImage.revalidate();
-		sourceImage.setVisible(true);
-		sourceImage.revalidate();
-//        splitPane.setPreferredSize(imagePrefferedSize);
-//        splitPane.setMinimumSize(imagePrefferedSize);
-		splitPane.setDividerLocation(imageFrame.getHeight()/2);
-		
-		imageFrame.add(splitPane);
-		imageFrame.repaint();
-		imageFrame.revalidate();
-		contentPane.repaint();
-
-	}
-
-	private void showSingleView() {
-		if(filePath==null)
-			return;
-
-		try {
-			imageFrame.remove(splitPane);
-			imageFrame.repaint();
-		} catch (Exception e) {
-
-		}
-		if(!workImage.hasContent())
-		{
-			workImage.createImage(filePath);
-			workImage.convertToGrayScale();
-			workImage.display();
-			
-		}	
-		JScrollPane scrollPane = new JScrollPane(workImage,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		//scrollPane.setPreferredSize(new Dimension(work.width, height));
-	
-		imageFrame.add(scrollPane);
 		imageFrame.setSize(imagePrefferedSize);
-		System.out.println(imageFrame.getSize());
-		imageFrame.revalidate();
-		contentPane.repaint();
-
+		imageFrame.show();
 	}
-
+	
 	public void calculateImagePanelPrefferedSize() {
 
 		int width = (int) (0.75 * getWidth());

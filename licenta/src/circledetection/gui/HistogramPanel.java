@@ -2,12 +2,12 @@ package circledetection.gui;
 
 import java.awt.image.renderable.ParameterBlock;
 
+import javax.media.jai.Histogram;
+import javax.media.jai.JAI;
+import javax.media.jai.PlanarImage;
 import javax.swing.JPanel;
-import javax.swing.Renderer;
-import javax.media.jai.*;
 
-import org.jfree.chart.JFreeChart;
-
+@SuppressWarnings("serial")
 public class HistogramPanel extends JPanel{
     private static int numBands;
 
