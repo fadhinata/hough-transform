@@ -69,6 +69,12 @@ public class ImagePanel extends JPanel implements MouseListener{
 		display.set(source);
 		
 	}
+	public void display(PlanarImage img) { 
+		
+		//scale(ApplicationFrame.getPrefferedSize().width,ApplicationFrame.getPrefferedSize().height , true);
+		display.set(img);
+		
+	}
 	
 	public void convertToGrayScale()
 	{

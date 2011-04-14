@@ -47,9 +47,12 @@ public class EditPanel extends JPanel {
 
 				
 				PlanarImage img = appFrame.getImageFrame().getWorkImage().getSource();
-							
-				appFrame.getHistogramFrame().add(new HistogramPanel(img ));
+				appFrame.getHistogramFrame().getContentPane().removeAll();		
+				HistogramPanel histPanel = new HistogramPanel(img );
+				histPanel.histogramChart();
+				appFrame.getHistogramFrame().add(histPanel);
 				appFrame.getHistogramFrame().setLocation(0, 0);
+				appFrame.getHistogramFrame().pack();
 				appFrame.getHistogramFrame().revalidate();
 				appFrame.getHistogramFrame().repaint();
 				appFrame.getHistogramFrame().moveToFront();
@@ -65,6 +68,71 @@ public class EditPanel extends JPanel {
 		});
 		   
 		   this.add(histogram);
+		   
+		   JButton histogram2 = new JButton("Histogram equalization");
+		   histogram2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				appFrame.getHistogramFrame().setVisible(true);
+
+				
+				PlanarImage img = appFrame.getImageFrame().getWorkImage().getSource();
+				appFrame.getHistogramFrame().getContentPane().removeAll();	
+				HistogramPanel histPanel = new HistogramPanel(img );
+				histPanel.histogramEqChart();
+				appFrame.getHistogramFrame().add(histPanel);
+				
+				appFrame.getHistogramFrame().setLocation(0, 0);
+				appFrame.getHistogramFrame().pack();
+				appFrame.getHistogramFrame().revalidate();
+				appFrame.getHistogramFrame().repaint();
+				appFrame.getHistogramFrame().moveToFront();
+				appFrame.getImageFrame().getWorkImage().display(histPanel.getEq());
+				try {
+					appFrame.getHistogramFrame().setSelected(true);
+					
+				} catch (PropertyVetoException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		   
+		   this.add(histogram2);
+		   JButton histogram3 = new JButton("Histogram normalization");
+		   histogram3.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				appFrame.getHistogramFrame().setVisible(true);
+
+				
+				PlanarImage img = appFrame.getImageFrame().getWorkImage().getSource();
+				appFrame.getHistogramFrame().getContentPane().removeAll();	
+				HistogramPanel histPanel = new HistogramPanel(img );
+				histPanel.histogramNmChart();
+				appFrame.getHistogramFrame().add(histPanel);
+				
+				appFrame.getHistogramFrame().setLocation(0, 0);
+				appFrame.getHistogramFrame().pack();
+				appFrame.getHistogramFrame().revalidate();
+				appFrame.getHistogramFrame().repaint();
+				appFrame.getHistogramFrame().moveToFront();
+				appFrame.getImageFrame().getWorkImage().display(histPanel.getNm());
+				try {
+					appFrame.getHistogramFrame().setSelected(true);
+					
+				} catch (PropertyVetoException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		   
+		   this.add(histogram3);
 		
 	}
 	@Override
