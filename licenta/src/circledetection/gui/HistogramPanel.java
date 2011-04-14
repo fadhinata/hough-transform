@@ -3,49 +3,47 @@ package circledetection.gui;
 import java.awt.Color;
 import java.awt.image.Raster;
 import java.awt.image.renderable.ParameterBlock;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
+import javax.media.jai.RenderedOp;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.DatasetUtilities;
-import org.jfree.data.statistics.HistogramDataset;
-import org.jfree.data.statistics.HistogramType;
-import org.jfree.data.xy.DefaultIntervalXYDataset;
-import org.jfree.data.xy.XYDataset;
-
 
 
 @SuppressWarnings("serial")
 public class HistogramPanel extends JPanel{
 
 	private PlanarImage img;
+	private RenderedOp nm;
+	private RenderedOp eq;
+	private PlanarImage dst;
 
 	// Retrieves a histogram for the image.
    public HistogramPanel(PlanarImage img) {
 	this.img = img;
-	init();
 }
 	
-	private Histogram createHistogram() {
+	public RenderedOp getNm() {
+	return nm;
+}
+
+public RenderedOp getEq() {
+	return eq;
+}
+
+	private Histogram createHistogram(PlanarImage img) {
 	    int[] bins = {256, 256, 256};             // The number of bins.
 	     double[] low = {0.0D, 0.0D, 0.0D};        // The low value.
 	     double[] high = {256.0D, 256.0D, 256.0D}; // The high value.
@@ -62,7 +60,7 @@ public class HistogramPanel extends JPanel{
 	     pb.add(1);                         // periods
 
 	     // Perform the histogram operation.
-	     PlanarImage dst = (PlanarImage)JAI.create("histogram", pb, null);
+	     dst = (PlanarImage)JAI.create("histogram", pb, null);
 
 	     // Retrieve the histogram data.
 	     hist = (Histogram) dst.getProperty("histogram");
@@ -77,9 +75,9 @@ public class HistogramPanel extends JPanel{
 	    
 	}
 	
-	private JFreeChart createPlot()
+	private JFreeChart createPlot(PlanarImage img)
 	{
-		Histogram hist = createHistogram();
+		Histogram hist = createHistogram(img);
 		int[] value;
 		value = hist.getBins()[0];
 
@@ -114,24 +112,93 @@ public class HistogramPanel extends JPanel{
     plot.setDomainGridlinePaint(Color.white);
     plot.setRangeGridlinesVisible(true);
     plot.setRangeGridlinePaint(Color.white);
+
+ 
     
     final CategoryAxis domainAxis = plot.getDomainAxis();
+    domainAxis.setVisible(false);
     
     final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
     rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-    rangeAxis.setLabelAngle(0 * Math.PI / 2.0);
+    rangeAxis.setAutoRangeIncludesZero(true);
     // OPTIONAL CUSTOMISATION COMPLETED.
     
     return chart;
 	}
 	
-	public void init()
+	public void histogramChart()
 	{
-		JFreeChart chart =createPlot(); 
-		ChartPanel chartPanel = new ChartPanel(chart,250,250,200,200,200,200,false,false,false,false,true,true);
-		chartPanel.setSize(200,200);
+		JFreeChart chart =createPlot(img); 
+		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setSize(250,250);
 		chartPanel.setVisible(true);
 		this.add(chartPanel);
+	}
+	public void histogramEqChart()
+	{
+		equalizeHistogram();
+		JFreeChart chart =createPlot(eq); 
+		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setSize(250,250);
+		chartPanel.setVisible(true);
+		this.add(chartPanel);
+	}
+	public void histogramNmChart()
+	{
+		normalizeHistogram();
+		JFreeChart chart =createPlot(nm); 
+		ChartPanel chartPanel = new ChartPanel(chart);
+		chartPanel.setSize(250,250);
+		chartPanel.setVisible(true);
+		this.add(chartPanel);
+	}
+	
+	private void equalizeHistogram(){
+	     // Create an equalization CDF.
+		Histogram hist = createHistogram(img);
+	     float[][] CDFeq = new float[hist.getNumBands()][];
+	     for(int b = 0; b < hist.getNumBands(); b++) {
+	         CDFeq[b] = new float[hist.getNumBins(b)];
+	         for(int i = 0; i < hist.getNumBins(b); i++) {
+	             CDFeq[b][i] = (float)(i+1)/(float)hist.getNumBins(b);
+	         }
+	     }
+
+	  
+	     // Create a histogram-equalized image.
+	   eq = JAI.create("matchcdf", dst, CDFeq);
+
+	    
+
+	}
+	private void normalizeHistogram()
+	{
+		Histogram hist = createHistogram(img);
+		   // Create a normalization CDF.
+	     double[] mean = new double[] {128.0, 128.0, 128.0};
+	     double[] stDev = new double[] {64.0, 64.0, 64.0};
+	     float[][] CDFnorm = new float[hist.getNumBands()][];
+	     for(int b = 0; b < hist.getNumBands(); b++) {
+	         CDFnorm[b] = new float[hist.getNumBins(b)];
+	         double mu = mean[b];
+	         double twoSigmaSquared = 2.0*stDev[b]*stDev[b];
+	         CDFnorm[b][0] =
+	             (float)Math.exp(-mu*mu/twoSigmaSquared);
+	         for(int i = 1; i < hist.getNumBins(b); i++) {
+	             double deviation = i - mu;
+	             CDFnorm[b][i] = CDFnorm[b][i-1] +
+	                (float)Math.exp(-deviation*deviation/twoSigmaSquared);
+	         }
+	     }
+	     for(int b = 0; b < hist.getNumBands(); b++) {
+	         double CDFnormLast = CDFnorm[b][hist.getNumBins(b)-1];
+	        for(int i = 0; i < hist.getNumBins(b); i++) {
+	            CDFnorm[b][i] /= CDFnormLast;
+	        }
+	     }
+	     // Create a histogram-normalized image.
+	     nm = JAI.create("matchcdf", dst, CDFnorm);
+
 	}
 
 	

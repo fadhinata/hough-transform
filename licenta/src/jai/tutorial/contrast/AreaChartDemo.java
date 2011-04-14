@@ -38,7 +38,7 @@ public class AreaChartDemo extends ApplicationFrame {
 
         // create a dataset...
         final double[][] data = new double[][] {
-            {1.0, 4.0, 3.0, 5.0, 5.0, 7.0, 7.0, 8.0},
+            {1.0, 4.0, 3.0, 5.0, 5.0, 7.0, 7.0, 8.0,2.0,3.0,15.0},
            
         };
 
@@ -103,19 +103,22 @@ public class AreaChartDemo extends ApplicationFrame {
         plot.setDomainGridlinePaint(Color.white);
         plot.setRangeGridlinesVisible(true);
         plot.setRangeGridlinePaint(Color.white);
+//        plot.setDomainGridlinesVisible(false);
 //        
-//        final CategoryAxis domainAxis = plot.getDomainAxis();
-//        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
-//        domainAxis.setLowerMargin(0.0);
-//        domainAxis.setUpperMargin(0.0);
+        final CategoryAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD);
+        domainAxis.setTickLabelsVisible(true);
+        domainAxis.setLowerMargin(0.0);
+        domainAxis.setUpperMargin(0.0);
 //        domainAxis.addCategoryLabelToolTip("Type 1", "The first type.");
 //        domainAxis.addCategoryLabelToolTip("Type 2", "The second type.");
 //        domainAxis.addCategoryLabelToolTip("Type 3", "The third type.");
         
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        rangeAxis.setLabelAngle(0 * Math.PI / 2.0);
-        // OPTIONAL CUSTOMISATION COMPLETED.
+      rangeAxis.setVisible(false);  
+//        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits(getLocale()));
+//        rangeAxis.setLabelAngle(0 * Math.PI / 2.0);
+//        // OPTIONAL CUSTOMISATION COMPLETED.
         
         return chart;
         

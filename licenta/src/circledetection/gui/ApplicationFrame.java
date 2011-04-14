@@ -108,7 +108,7 @@ public class ApplicationFrame extends JFrame {
 		histogramFrame.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		histogramFrame.setResizable(true);
 		contentPane.add(histogramFrame);
-		histogramFrame.setSize(250, 250);
+		histogramFrame.setSize(500, 500);
 //		histogramFrame.setMaximumSize(new Dimension(200, 200));
 
 		
