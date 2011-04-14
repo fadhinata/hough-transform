@@ -1,7 +1,10 @@
 package circledetection.gui;
 
+import java.awt.Color;
 import java.awt.image.Raster;
 import java.awt.image.renderable.ParameterBlock;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
@@ -12,9 +15,22 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
+import org.jfree.data.xy.DefaultIntervalXYDataset;
+import org.jfree.data.xy.XYDataset;
 
 
 
@@ -65,39 +81,55 @@ public class HistogramPanel extends JPanel{
 	{
 		Histogram hist = createHistogram();
 		int[] value;
-		int number = hist.getNumBands();
-		double []doubleValues = new double[number * hist.getBins()[0].length]; int d=0;
-		for (int i=0; i< number ; i++) {
-			value = hist.getBins()[i];
-			for(int j=0; j< value.length; j++)
-				doubleValues[d++] = value[j];		     
-		}   
-//		double[] value = new double[100];
-//		Random generator = new Random();
-//		for (int i = 1; i < 100; i++)
-//			value[i] = generator.nextDouble();
-//		int number = 10;
+		value = hist.getBins()[0];
 
-		HistogramDataset dataset = new HistogramDataset();
-		dataset.setType(HistogramType.FREQUENCY);
-
-		dataset.addSeries("Histogram", doubleValues, 255,0,255);
-
-		PlotOrientation orientation = PlotOrientation.VERTICAL;
-
-		JFreeChart chart = ChartFactory.createHistogram("", null,
-				null, dataset, orientation, false, false, false);
+		final double[][] data = new double[6][value.length] ;
+		for(int i=0; i<value.length; i++)
+		{
+			data[0][i]= value[i];
+		}
 		
 
-		return chart;
+		final CategoryDataset dataset = DatasetUtilities.createCategoryDataset(
+				"", "", data);
+
+		final JFreeChart chart = ChartFactory.createAreaChart("", // chart title
+				"", // domain axis label
+				"", // range axis label
+				dataset, // data
+				PlotOrientation.VERTICAL, // orientation
+				false, // include legend
+				true, // tooltips
+				false // urls
+				);
+
+
+    chart.setBackgroundPaint(Color.white);
+
+    final CategoryPlot plot = chart.getCategoryPlot();
+    plot.setForegroundAlpha(0.5f);
+    
+    plot.setBackgroundPaint(Color.lightGray);
+    plot.setDomainGridlinesVisible(true);
+    plot.setDomainGridlinePaint(Color.white);
+    plot.setRangeGridlinesVisible(true);
+    plot.setRangeGridlinePaint(Color.white);
+    
+    final CategoryAxis domainAxis = plot.getDomainAxis();
+    
+    final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+    rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+    rangeAxis.setLabelAngle(0 * Math.PI / 2.0);
+    // OPTIONAL CUSTOMISATION COMPLETED.
+    
+    return chart;
 	}
 	
 	public void init()
 	{
 		JFreeChart chart =createPlot(); 
-		ChartPanel chartPanel = new ChartPanel(chart);
+		ChartPanel chartPanel = new ChartPanel(chart,250,250,200,200,200,200,false,false,false,false,true,true);
 		chartPanel.setSize(200,200);
-		
 		chartPanel.setVisible(true);
 		this.add(chartPanel);
 	}

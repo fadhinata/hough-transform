@@ -12,6 +12,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JSplitPane;
 @SuppressWarnings("serial")
 public class ApplicationFrame extends JFrame {
+	/**
+	* this gets rid of exception for not using native acceleration
+	*/
+	static
+	{
+	System.setProperty("com.sun.media.jai.disableMediaLib", "true");
+	}
 	public static final int SINGLE_IMAGE_VIEW = 0;
 	public static final int DUAL_VIEW = 1;
 
@@ -101,7 +108,7 @@ public class ApplicationFrame extends JFrame {
 		histogramFrame.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		histogramFrame.setResizable(true);
 		contentPane.add(histogramFrame);
-		histogramFrame.setSize(200, 200);
+		histogramFrame.setSize(250, 250);
 //		histogramFrame.setMaximumSize(new Dimension(200, 200));
 
 		
