@@ -1,0 +1,66 @@
+package circledetection.gui.frame;
+
+import java.awt.Dimension;
+
+import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import javax.swing.JScrollPane;
+
+import circledetection.util.Operators;
+
+
+public class SingleViewFrame extends ImageFrame {
+	
+	private static SingleViewFrame INSTANCE;
+	private JInternalFrame imageFrame;
+
+	private SingleViewFrame(JDesktopPane contentPane, String filePath){
+		super(contentPane,filePath); 
+		imageFrame = new JInternalFrame("Single View Image");
+		contentPane.add(imageFrame);
+	}
+	public void show() {
+		if(filePath==null)
+			return;
+
+//		try {
+//			imageFrame.remove(splitPane);
+//			imageFrame.repaint();
+//		} catch (Exception e) {
+
+//		}
+		if(!workImage.hasContent())
+		{
+			workImage.createImage(filePath);
+			workImage.display(Operators.convertToGrayScale(workImage.getSource()));
+			
+			
+		}	
+		JScrollPane scrollPane = new JScrollPane(workImage,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		//scrollPane.setPreferredSize(new Dimension(work.width, height));
+	
+		imageFrame.add(scrollPane);
+//		imageFrame.setSize(imagePrefferedSize);
+		System.out.println(imageFrame.getSize());
+		imageFrame.revalidate();
+		imageFrame.setVisible(true);
+		imageFrame.moveToFront();
+		contentPane.repaint();
+
+	}
+	
+	public void dispose()
+	{
+		imageFrame.setVisible(false);
+	}
+	public static ImageFrame getInstance(JDesktopPane contentPane,
+			String filePath) {
+		
+		return INSTANCE == null ? new SingleViewFrame(contentPane, filePath) : INSTANCE;
+	}
+	@Override
+	public void setSize(Dimension size) {
+		imageFrame.setSize(size);
+		
+	}
+}
