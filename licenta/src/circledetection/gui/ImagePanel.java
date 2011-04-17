@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.ColorModel;
 import java.awt.image.renderable.ParameterBlock;
 
+import javax.media.jai.Histogram;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
@@ -204,6 +205,32 @@ public class ImagePanel extends JPanel implements MouseListener{
 	            source = JAI.create("lookup", pb, null);
 	            display();
 	  
+   }
+   public void threshold(){
+	   ParameterBlock pb1 = new ParameterBlock();
+	     pb1.addSource(source);   // The source image
+	     pb1.add(null);        // The region of the image to scan
+	     pb1.add(1);         // The horizontal sampling rate
+	     pb1.add(1);         // The vertical sampling rate
+
+	     // Perform the extrema operation on the source image
+	     RenderedOp op = JAI.create("extrema", pb1);
+
+//	     // Retrieve both the maximum and minimum pixel value
+	     Histogram hist = HistogramPanel.createHistogram(source);
+	     double[] max = (double[]) op.getProperty("maximum");
+	     double[] min = hist.getMinFuzzinessThreshold();
+	     double[] constant = {255};
+		
+		  ParameterBlock pb = new ParameterBlock();
+	     pb.addSource(source);
+	     pb.add(min);
+	     pb.add(max);
+	     pb.add(constant);
+	     RenderedOp dst = JAI.create("threshold", pb);
+	     display(dst);
+
+
    }
    public boolean hasContent()
    {

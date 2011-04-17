@@ -28,7 +28,7 @@ public class HistogramPanel extends JPanel{
 	private PlanarImage img;
 	private RenderedOp nm;
 	private RenderedOp eq;
-	private PlanarImage dst;
+	private static PlanarImage dst;
 
 	// Retrieves a histogram for the image.
    public HistogramPanel(PlanarImage img) {
@@ -43,7 +43,7 @@ public RenderedOp getEq() {
 	return eq;
 }
 
-	private Histogram createHistogram(PlanarImage img) {
+	public static Histogram  createHistogram(PlanarImage img) {
 	    int[] bins = {256, 256, 256};             // The number of bins.
 	     double[] low = {0.0D, 0.0D, 0.0D};        // The low value.
 	     double[] high = {256.0D, 256.0D, 256.0D}; // The high value.
@@ -200,6 +200,8 @@ public RenderedOp getEq() {
 	     nm = JAI.create("matchcdf", dst, CDFnorm);
 
 	}
+	
+	
 
 	
 
