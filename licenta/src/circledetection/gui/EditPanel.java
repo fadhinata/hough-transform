@@ -12,8 +12,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
-
-import com.sun.media.jai.widget.DisplayJAI;
 @SuppressWarnings("serial")
 public class EditPanel extends JPanel {
 	private final ApplicationFrame appFrame;
@@ -64,6 +62,15 @@ public class EditPanel extends JPanel {
 					e1.printStackTrace();
 				}
 				
+			}
+		});
+		   
+		   histogram = new JButton("Threshold");
+		   histogram.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				appFrame.getImageFrame().getWorkImage().threshold();
 			}
 		});
 		   
