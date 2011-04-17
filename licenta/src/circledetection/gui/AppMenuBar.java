@@ -1,5 +1,6 @@
 package circledetection.gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.filechooser.FileFilter;
 
+import circledetection.gui.frame.ApplicationFrame;
+
 
 
 @SuppressWarnings("serial")
@@ -24,9 +27,10 @@ public class AppMenuBar  extends JMenuBar{
 	private ApplicationFrame mainFrame ;
 	private Insets insets; 
 	
-	public AppMenuBar(final ApplicationFrame mainFrame){
+	public AppMenuBar(){
 	
-	this.mainFrame = mainFrame;	
+	this.mainFrame = ApplicationFrame.getInstance();	
+	this.setBackground(Color.LIGHT_GRAY);
 	insets = new Insets(2, 4, 2, 4);
     initComponents();
 	
