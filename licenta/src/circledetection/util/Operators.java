@@ -4,8 +4,10 @@ import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
+import java.awt.image.Raster;
 import java.awt.image.renderable.ParameterBlock;
 
+import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
@@ -114,8 +116,34 @@ public class Operators {
 		return JAI.create("lookup", pb, null);
 
 	}
-	
-	public static PlanarImage threshold(PlanarImage source) {
+	public static Histogram  createHistogram(PlanarImage img) {
+	    int[] bins = {256, 256, 256};             // The number of bins.
+	     double[] low = {0.0D, 0.0D, 0.0D};        // The low value.
+	     double[] high = {256.0D, 256.0D, 256.0D}; // The high value.
+
+	     // Construct the Histogram object.
+	     Histogram hist = new Histogram(bins, low, high);
+
+	     // Create the parameter block.
+	     ParameterBlock pb = new ParameterBlock();
+	     pb.addSource(img);               // Specify the source image
+	                         // Specify the histogram
+	     pb.add(null);                      // No ROI
+	     pb.add(1);                         // Sampling
+	     pb.add(1);                         // periods
+
+	     // Perform the histogram operation.
+	     PlanarImage dst = (PlanarImage)JAI.create("histogram", pb, null);
+
+	     // Retrieve the histogram data.
+	     hist = (Histogram) dst.getProperty("histogram");
+	 
+		Raster raster = img.getExtendedData(img.getBounds(), BorderExtender.createInstance(BorderExtender.BORDER_WRAP));
+	     hist.countPixels(raster,null,0, 0,255,1);
+	     return hist;
+	    
+	}
+	public static PlanarImage threshold(PlanarImage source, double[] thresholdValue) {
 		ParameterBlock pb1 = new ParameterBlock();
 		pb1.addSource(source); // The source image
 		pb1.add(null); // The region of the image to scan
@@ -126,22 +154,11 @@ public class Operators {
 		RenderedOp op = JAI.create("extrema", pb1);
 
 		// // Retrieve both the maximum and minimum pixel value
-		Histogram hist = HistogramChartPanel.createHistogram(source);
+		Histogram hist = createHistogram(source);
 		double[] max = (double[]) op.getProperty("maximum");
-		double[] min = hist.getMinFuzzinessThreshold();
+		double[] min = thresholdValue;
 		double[] constant = { 255 };
 
-		System.out.println("iterative threshold: "+hist.getIterativeThreshold()[0]);
-		System.out.println("max entropy "+hist.getMaxEntropyThreshold()[0]);
-		System.out.println("max variance "+hist.getMaxVarianceThreshold()[0]);
-		System.out.println("min error "+hist.getMinErrorThreshold()[0]);
-		System.out.println("min fuzziness "+hist.getMinFuzzinessThreshold()[0]);
-		System.out.println("mode 0.5 "+hist.getModeThreshold(0.5)[0]);
-		System.out.println("mode 0.2 "+hist.getModeThreshold(0.2)[0]);
-		System.out.println("mode 0.7 "+hist.getModeThreshold(0.7)[0]);
-		System.out.println("pTile 0.5 "+hist.getPTileThreshold(0.5)[0]);
-		System.out.println("pTile 0.2 "+hist.getPTileThreshold(0.2)[0]);
-		System.out.println("pTile 0.7 "+hist.getPTileThreshold(0.7)[0]);
 		
 		ParameterBlock pb = new ParameterBlock();
 		pb.addSource(source);
@@ -149,8 +166,7 @@ public class Operators {
 		pb.add(max);
 		pb.add(constant);
 		return JAI.create("threshold", pb);
-		
-
+	
 	}
 
 }

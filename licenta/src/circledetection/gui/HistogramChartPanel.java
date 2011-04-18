@@ -21,6 +21,8 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.DatasetUtilities;
 
+import circledetection.util.Operators;
+
 
 @SuppressWarnings("serial")
 public class HistogramChartPanel extends JPanel{
@@ -43,41 +45,11 @@ public RenderedOp getEq() {
 	return eq;
 }
 
-	public static Histogram  createHistogram(PlanarImage img) {
-	    int[] bins = {256, 256, 256};             // The number of bins.
-	     double[] low = {0.0D, 0.0D, 0.0D};        // The low value.
-	     double[] high = {256.0D, 256.0D, 256.0D}; // The high value.
 
-	     // Construct the Histogram object.
-	     Histogram hist = new Histogram(bins, low, high);
-
-	     // Create the parameter block.
-	     ParameterBlock pb = new ParameterBlock();
-	     pb.addSource(img);               // Specify the source image
-	                         // Specify the histogram
-	     pb.add(null);                      // No ROI
-	     pb.add(1);                         // Sampling
-	     pb.add(1);                         // periods
-
-	     // Perform the histogram operation.
-	     dst = (PlanarImage)JAI.create("histogram", pb, null);
-
-	     // Retrieve the histogram data.
-	     hist = (Histogram) dst.getProperty("histogram");
-	 
-		Raster raster = img.getExtendedData(img.getBounds(), BorderExtender.createInstance(BorderExtender.BORDER_WRAP));
-	     hist.countPixels(raster,null,0, 0,255,1);
-	     return hist;
-//	     // Print 3-band histogram.
-//	     for (int i=0; i< hist.getNumBins().length; i++) {
-//	        System.out.println(hist.getBinSize(0, i) + " ");
-//	     }
-	    
-	}
 	
 	private JFreeChart createPlot(PlanarImage img)
 	{
-		Histogram hist = createHistogram(img);
+		Histogram hist = Operators.createHistogram(img);
 		int[] value;
 		value = hist.getBins()[0];
 
@@ -155,7 +127,7 @@ public RenderedOp getEq() {
 	
 	private void equalizeHistogram(){
 	     // Create an equalization CDF.
-		Histogram hist = createHistogram(img);
+		Histogram hist = Operators.createHistogram(img);
 	     float[][] CDFeq = new float[hist.getNumBands()][];
 	     for(int b = 0; b < hist.getNumBands(); b++) {
 	         CDFeq[b] = new float[hist.getNumBins(b)];
@@ -173,7 +145,7 @@ public RenderedOp getEq() {
 	}
 	private void normalizeHistogram()
 	{
-		Histogram hist = createHistogram(img);
+		Histogram hist = Operators.createHistogram(img);
 		   // Create a normalization CDF.
 	     double[] mean = new double[] {128.0, 128.0, 128.0};
 	     double[] stDev = new double[] {64.0, 64.0, 64.0};
