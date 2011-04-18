@@ -14,7 +14,7 @@ import javax.media.jai.PlanarImage;
 import javax.media.jai.RasterFactory;
 import javax.media.jai.RenderedOp;
 
-import circledetection.gui.HistogramPanel;
+import circledetection.gui.HistogramChartPanel;
 
 public class Operators {
 	
@@ -126,11 +126,23 @@ public class Operators {
 		RenderedOp op = JAI.create("extrema", pb1);
 
 		// // Retrieve both the maximum and minimum pixel value
-		Histogram hist = HistogramPanel.createHistogram(source);
+		Histogram hist = HistogramChartPanel.createHistogram(source);
 		double[] max = (double[]) op.getProperty("maximum");
 		double[] min = hist.getMinFuzzinessThreshold();
 		double[] constant = { 255 };
 
+		System.out.println("iterative threshold: "+hist.getIterativeThreshold()[0]);
+		System.out.println("max entropy "+hist.getMaxEntropyThreshold()[0]);
+		System.out.println("max variance "+hist.getMaxVarianceThreshold()[0]);
+		System.out.println("min error "+hist.getMinErrorThreshold()[0]);
+		System.out.println("min fuzziness "+hist.getMinFuzzinessThreshold()[0]);
+		System.out.println("mode 0.5 "+hist.getModeThreshold(0.5)[0]);
+		System.out.println("mode 0.2 "+hist.getModeThreshold(0.2)[0]);
+		System.out.println("mode 0.7 "+hist.getModeThreshold(0.7)[0]);
+		System.out.println("pTile 0.5 "+hist.getPTileThreshold(0.5)[0]);
+		System.out.println("pTile 0.2 "+hist.getPTileThreshold(0.2)[0]);
+		System.out.println("pTile 0.7 "+hist.getPTileThreshold(0.7)[0]);
+		
 		ParameterBlock pb = new ParameterBlock();
 		pb.addSource(source);
 		pb.add(min);

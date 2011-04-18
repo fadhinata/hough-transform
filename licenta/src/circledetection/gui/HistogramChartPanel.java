@@ -23,7 +23,7 @@ import org.jfree.data.general.DatasetUtilities;
 
 
 @SuppressWarnings("serial")
-public class HistogramPanel extends JPanel{
+public class HistogramChartPanel extends JPanel{
 
 	private PlanarImage img;
 	private RenderedOp nm;
@@ -31,7 +31,7 @@ public class HistogramPanel extends JPanel{
 	private static PlanarImage dst;
 
 	// Retrieves a histogram for the image.
-   public HistogramPanel(PlanarImage img) {
+   public HistogramChartPanel(PlanarImage img) {
 	this.img = img;
 }
 	
