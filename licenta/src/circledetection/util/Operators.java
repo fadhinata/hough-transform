@@ -11,10 +11,14 @@ import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
 import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
+import javax.media.jai.KernelJAI;
 import javax.media.jai.LookupTableJAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.RasterFactory;
 import javax.media.jai.RenderedOp;
+import javax.media.jai.operator.MedianFilterDescriptor;
+import javax.media.jai.operator.MedianFilterShape;
+
 
 import circledetection.gui.HistogramChartPanel;
 
@@ -124,16 +128,7 @@ public class Operators {
 	     // Construct the Histogram object.
 	     Histogram hist = new Histogram(bins, low, high);
 
-	     // Create the parameter block.
-	     ParameterBlock pb = new ParameterBlock();
-	     pb.addSource(img);               // Specify the source image
-	                         // Specify the histogram
-	     pb.add(null);                      // No ROI
-	     pb.add(1);                         // Sampling
-	     pb.add(1);                         // periods
-
-	     // Perform the histogram operation.
-	     PlanarImage dst = (PlanarImage)JAI.create("histogram", pb, null);
+	     PlanarImage dst = createHistogramImage(img);
 
 	     // Retrieve the histogram data.
 	     hist = (Histogram) dst.getProperty("histogram");
@@ -143,6 +138,30 @@ public class Operators {
 	     return hist;
 	    
 	}
+
+
+	public static PlanarImage createHistogramImage(PlanarImage img) {
+		// Create the parameter block.
+	     ParameterBlock pb = new ParameterBlock();
+	     pb.addSource(img);               // Specify the source image
+	                         // Specify the histogram
+	     pb.add(null);                      // No ROI
+	     pb.add(1);                         // Sampling
+	     pb.add(1);                         // periods
+
+	     // Perform the histogram operation.
+	     PlanarImage dst = (PlanarImage)JAI.create("histogram", pb, null);
+		return dst;
+	}
+	public static PlanarImage medianFilter(PlanarImage img, MedianFilterShape mask) {
+		ParameterBlock pb = new ParameterBlock();
+		pb = new ParameterBlock();
+		pb.addSource(img);
+		pb.add(mask);
+		pb.add(3);
+		return (PlanarImage) JAI.create("MedianFilter", pb);
+
+	 }
 	public static PlanarImage threshold(PlanarImage source, double[] thresholdValue) {
 		ParameterBlock pb1 = new ParameterBlock();
 		pb1.addSource(source); // The source image
@@ -154,7 +173,7 @@ public class Operators {
 		RenderedOp op = JAI.create("extrema", pb1);
 
 		// // Retrieve both the maximum and minimum pixel value
-		Histogram hist = createHistogram(source);
+//		Histogram hist = createHistogram(source);
 		double[] max = (double[]) op.getProperty("maximum");
 		double[] min = thresholdValue;
 		double[] constant = { 255 };
@@ -163,10 +182,38 @@ public class Operators {
 		ParameterBlock pb = new ParameterBlock();
 		pb.addSource(source);
 		pb.add(min);
-		pb.add(max);
+//		pb.add(max);
 		pb.add(constant);
-		return JAI.create("threshold", pb);
+		return JAI.create("BinaryThreshold", pb);
 	
 	}
+	
+	
+	public static PlanarImage sobel(PlanarImage source) {
+		float[] SOBEL_V_DATA = {
+			-1.0F, -2.0F, -1.0F,
+			 0.0F,  0.0F,  0.0F,
+			 1.0F,  2.0F,  1.0F
+			};
+			
+		float[] SOBEL_H_DATA = {
+			 1.0F,  0.0F, -1.0F,
+			 2.0F,  0.0F, -2.0F,
+			 1.0F,  0.0F, -1.0F
+			};
+			
+		KernelJAI SOBEL_V 	= new KernelJAI(3,3,SOBEL_V_DATA);
+		KernelJAI SOBEL_H 	= new KernelJAI(3,3,SOBEL_H_DATA);
+
+		
+		ParameterBlock pb = new ParameterBlock();
+		pb.addSource(source);
+		pb.add(SOBEL_H);
+		pb.add(SOBEL_V);
+		
+		return (PlanarImage) JAI.create("GradientMagnitude", pb);
+	
+	}
+	
 
 }

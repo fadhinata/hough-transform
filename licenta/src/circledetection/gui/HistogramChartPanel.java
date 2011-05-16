@@ -34,7 +34,9 @@ public class HistogramChartPanel extends JPanel{
 
 	// Retrieves a histogram for the image.
    public HistogramChartPanel(PlanarImage img) {
+	   
 	this.img = img;
+	dst = Operators.createHistogramImage(img);
 }
 	
 	public RenderedOp getNm() {

@@ -124,7 +124,7 @@ public class AppMenuBar  extends JMenuBar{
 
 					@Override
 					public String getDescription() {
-						return "Images (*.jpg, *.jpeg, *.bmp)";
+						return "Images (*.jpg, *.jpeg, *.bmp,*png)";
 					}
 
 					@Override
@@ -137,7 +137,8 @@ public class AppMenuBar  extends JMenuBar{
 								|| pathname.getName().toLowerCase()
 										.endsWith("jpeg")
 								|| pathname.getName().toLowerCase()
-										.endsWith("bmp");
+										.endsWith("bmp") || pathname.getName().toLowerCase()
+										.endsWith("png");
 					}
 				};
 				imageChooser.setFileFilter(imageFilter);
