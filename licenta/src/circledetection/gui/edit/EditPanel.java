@@ -22,21 +22,31 @@ public class EditPanel extends JPanel {
 		setBorder(new TitledBorder("Edit "));
 		setBackground(Color.lightGray);
 		setLayout(new GridBagLayout());
-		
+		    
 
 	
 	        GridBagConstraints gbc = new GridBagConstraints();
 	        gbc.insets = new Insets(1, 3, 0, 3);
 	        gbc.weightx = 1.0;
-	        gbc.fill = GridBagConstraints.HORIZONTAL;
+	        gbc.gridx = 0;
+	        gbc.fill = GridBagConstraints.NONE;
 	        gbc.gridwidth = GridBagConstraints.REMAINDER;
 	       
 	        ContrastPanel contrastPanel = new ContrastPanel();
 	        contrastAtom = new ExtandableAtom("Contrast", contrastPanel);
 	              
+	        contrastPanel.setVisible(true);
+	        contrastAtom.toggleSelection();
 	        this.add(contrastAtom, gbc);
 	        this.add(contrastPanel, gbc);
-	        contrastPanel.setVisible(false);
+	        
+	        gbc.gridx = GridBagConstraints.RELATIVE;
+	        MedianFilterPanel medianFilterPanel = new MedianFilterPanel();
+	        ExtandableAtom medianFilterAtom = new ExtandableAtom("Median Filter", medianFilterPanel);
+	              
+	        this.add(medianFilterAtom, gbc);
+	        this.add(medianFilterPanel, gbc);
+	        medianFilterPanel.setVisible(false);
 	       
 	        HistogramPanel histogramPanel = new HistogramPanel();
 	        ExtandableAtom histogramAtom = new ExtandableAtom("Histogram", histogramPanel);

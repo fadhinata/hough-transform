@@ -74,9 +74,13 @@ public class ImagePanel extends JPanel implements MouseListener {
 																			// interpolation
 
 		// Create the scale operation
-		rendering = JAI.create("scale", pb, null);
-		source = rendering;
-		display.set(source);
+		try{
+			rendering = JAI.create("scale", pb, null);
+			source = rendering;
+			display.set(source);
+		}catch(Exception e){
+			
+		}
 	}
 
 	
@@ -98,7 +102,7 @@ public class ImagePanel extends JPanel implements MouseListener {
 		if (e.getButton() == MouseEvent.BUTTON1)
 			scaleFactor += 0.2;
 		if (e.getButton() == MouseEvent.BUTTON3)
-			scaleFactor -= 0.2;
+			scaleFactor -=0.2;
 		scale(scaleFactor, scaleFactor);
 
 	}
