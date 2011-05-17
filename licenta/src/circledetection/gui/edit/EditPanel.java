@@ -61,7 +61,13 @@ public class EditPanel extends JPanel {
 	        this.add(thresholdAtom, gbc);
 	        this.add(thresholdPanel, gbc);
 	        thresholdPanel.setVisible(false);
-	       
+	        
+	        EdgeDetectionPanel edgePanel = new EdgeDetectionPanel();
+	        ExtandableAtom edgeAtom  = new ExtandableAtom("Edge detection", edgePanel);
+	        
+	        this.add(edgeAtom,gbc);
+	        this.add(edgePanel,gbc);
+	        edgePanel.setVisible(false);
 
 	}
 
