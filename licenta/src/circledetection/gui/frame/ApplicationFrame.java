@@ -11,10 +11,9 @@ import javax.swing.JInternalFrame;
 import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
-import circledetection.util.JAIOperatorRegister;
-
 import circledetection.gui.AppMenuBar;
 import circledetection.gui.edit.EditPanel;
+import circledetection.util.JAIOperatorRegister;
 
 @SuppressWarnings("serial")
 public class ApplicationFrame extends JFrame {

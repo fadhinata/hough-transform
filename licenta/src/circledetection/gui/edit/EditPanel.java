@@ -1,7 +1,6 @@
 package circledetection.gui.edit;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -9,11 +8,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.BorderFactory;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
 
 @SuppressWarnings("serial")
 public class EditPanel extends JInternalFrame implements Observer{
@@ -87,7 +82,7 @@ public class EditPanel extends JInternalFrame implements Observer{
 	        this.add(edgePanel,gbc);
 	        edgePanel.setVisible(false);
 	        
-	        HoughEllipseConfigurationPanel houghPanel = new HoughEllipseConfigurationPanel(new Dimension(200,200));
+	        HoughEllipseConfigurationPanel houghPanel = new HoughEllipseConfigurationPanel();
 	        ExtandableAtom houghAtom = new ExtandableAtom("Hough Transform", houghPanel);
 	        list.add(houghAtom);
 	        houghAtom.addObserver(this);

@@ -17,6 +17,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,33 +64,34 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 	private Color 		foreGround		=	 new Color(157,172,189,200);
 	private Color 		backGround		=	 new Color(198,210,162,255);
 	
-	public HoughEllipseConfigurationPanel(Dimension dim)
+	public HoughEllipseConfigurationPanel()
 	{		
-		canvasDim	=	new Dimension(dim);
+		canvasDim	=	new Dimension(180,200);
 		buildGui();
 		repaintCanvas();
 	}
 	
 	public void buildGui()
 	{
-		this.setLayout(new BorderLayout() );				
+		this.setLayout(new BorderLayout() );			
+		this.setBackground(Color.LIGHT_GRAY);
 		
 		JPanel	panel	=	new JPanel(new BorderLayout() );
 		
-		panel.add("Center",createCanvas());			// canvas;		
+		panel.add("North",createCanvas());			// canvas;		
 		
 		JComponent maj	= createMajorAxisPanel();
-		maj.setPreferredSize(new Dimension(this.canvasDim.width,80));
+		maj.setPreferredSize(new Dimension(this.canvasDim.width,100));
 		JPanel pmaj		=	new JPanel(new FlowLayout(FlowLayout.LEFT) );
 		pmaj.add(maj);
-		panel.add("South",pmaj);	// major axis;		
+		panel.add("Center",pmaj);	// major axis;		
 		
 		JComponent min	= createMinorAxisPanel();
-		min.setPreferredSize(new Dimension(80,this.canvasDim.height));
+		min.setPreferredSize(new Dimension(this.canvasDim.width,100));
 		JPanel pmin		=	new JPanel();
 		pmin.setLayout(new BoxLayout(pmin,BoxLayout.Y_AXIS));
 		pmin.add(min);
-		panel.add("East",pmin);				
+		panel.add("South",pmin);				
 		
 		add("North",panel);							// canvas;
 		add("South",createStatusPanel());			// minor axis;
@@ -108,29 +111,124 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 	
 	public JComponent createMajorAxisPanel()
 	{		
-		JPanel 	panel	=	new JPanel(new GridLayout(2,1));
+		GridBagLayout gridLayout = new GridBagLayout();
+	
+		JPanel 	panel	=	new JPanel(gridLayout);
+		panel.setBorder(BorderFactory.createTitledBorder("Large Ellipse"));
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 90;      
+//		c.gridwidth = 3;
+		c.gridx = 0;
+		c.gridy = 0;
+
+		maxMajor	=	createSlider(JSlider.HORIZONTAL,"H",this.canvasDim.width / 2);	
+		panel.add(maxMajor,c);
+
+		c.ipadx = 0; 
+		c.gridx = 1;
+		c.gridy = 0;
+		maxA = new JLabel();
+		maxA.setBorder(BorderFactory.createTitledBorder(""));
+		panel.add(maxA,c);	
 		
-		maxMajor	=	createSlider(JSlider.HORIZONTAL,"Max",this.canvasDim.width / 2);	
-		minMajor	=	createSlider(JSlider.HORIZONTAL,"Min",this.canvasDim.height / 2);	
 		
-		panel.add(maxMajor);
-		panel.add(minMajor);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 80;           
+//		c.gridwidth = 3;
+		c.gridx = 0;
+		c.gridy = 1;
+		
+		maxMinor	=	createSlider(JSlider.HORIZONTAL,"V",this.canvasDim.width / 2);	
+		panel.add(maxMinor,c);
+		
+		c.ipadx = 0;      
+		c.gridx = 1;
+		c.gridy = 1;
+	
+		maxB = new JLabel();
+		maxB.setBorder(BorderFactory.createTitledBorder(""));
+		panel.add(maxB,c);	
+		
+		maxA.setText(String.valueOf(this.maxMajor.getValue()));
+		maxB.setText(String.valueOf(this.maxMajor.getValue()));
+	
+		
 		
 		return panel;
 	}
 	
 	public JComponent createMinorAxisPanel()
 	{
-		JPanel 	panel	=	new JPanel(new GridLayout(1,2));
+		GridBagLayout gridLayout = new GridBagLayout();
 		
-		maxMinor	=	createSlider(JSlider.VERTICAL,"Max",this.canvasDim.width / 2);	
-		maxMinor.setPreferredSize(new Dimension(40,40));
-		minMinor	=	createSlider(JSlider.VERTICAL,"Min",this.canvasDim.height / 2);	
+		JPanel 	panel	=	new JPanel(gridLayout);
+		panel.setBorder(BorderFactory.createTitledBorder("Small Ellipse"));
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 90;      
+//		c.gridwidth = 3;
+		c.gridx = 0;
+		c.gridy = 0;
+		minMajor	=	createSlider(JSlider.HORIZONTAL,"H",this.canvasDim.height / 2);	
+		panel.add(minMajor,c);
+
+	
+
+		c.ipadx = 0; 
+		c.gridx = 1;
+		c.gridy = 0;
+		minA = new JLabel();
+		minA.setBorder(BorderFactory.createTitledBorder(""));
+		panel.add(minA,c);
 		
-		panel.add(maxMinor);
-		panel.add(minMinor);
+		
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.ipadx = 80;           
+//		c.gridwidth = 3;
+		c.gridx = 0;
+		c.gridy = 1;
+		
+		minMinor	=	createSlider(JSlider.HORIZONTAL,"V",this.canvasDim.height / 2);	
+		panel.add(minMinor,c);
+
+		c.ipadx = 0;      
+		c.gridx = 1;
+		c.gridy = 1;
+		minB = new JLabel();
+		minB.setBorder(BorderFactory.createTitledBorder(""));
+		panel.add(minB,c);
+		
+		
+		minA.setText(String.valueOf(this.minMajor.getValue()));
+		minB.setText(String.valueOf(this.minMajor.getValue()));
+	
+		
 		
 		return panel;
+		
+//		
+//		JPanel 	panel	=	new JPanel(new GridLayout(2,3));
+//		panel.setBorder(BorderFactory.createTitledBorder("Small Ellipse"));
+//		
+//		maxMinor	=	createSlider(JSlider.HORIZONTAL,"Max",this.canvasDim.width / 2);
+//		maxB = new JLabel();
+//		maxB.setBorder(BorderFactory.createTitledBorder(""));
+//
+//		minMinor	=	createSlider(JSlider.HORIZONTAL,"Min",this.canvasDim.height / 2);	
+//		minB = new JLabel();
+//		minB.setBorder(BorderFactory.createTitledBorder(""));		
+//		
+//		maxB.setText(String.valueOf(this.maxMinor.getValue()));
+//		minB.setText(String.valueOf(this.minMinor.getValue()));
+//		
+//		panel.add(maxMinor);
+//		panel.add(maxB);
+//		panel.add(minMinor);
+//		panel.add(minB);
+//		
+//		return panel;
 	}
 	
 	private JSlider createSlider(int orient,String title,int max)
@@ -166,30 +264,19 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 	{
 		JPanel 	panel	=	new JPanel(new GridLayout(3,2));
 		
-		maxA = new JLabel();
-		maxA.setBorder(BorderFactory.createTitledBorder("Max major axis"));
-//		maxA.setPreferredSize(new Dimension(100,40));
-		minA = new JLabel();
-		minA.setBorder(BorderFactory.createTitledBorder("Min major axis"));
-		maxB = new JLabel();
-		maxB.setBorder(BorderFactory.createTitledBorder("Max minor axis"));
-		minB = new JLabel();
-		minB.setBorder(BorderFactory.createTitledBorder("Min minor axis"));		
 		
-		maxA.setText(String.valueOf(this.maxMajor.getValue()));
-		minA.setText(String.valueOf(this.minMajor.getValue()));
-		maxB.setText(String.valueOf(this.maxMinor.getValue()));
-		minB.setText(String.valueOf(this.minMinor.getValue()));
+//		maxA.setPreferredSize(new Dimension(100,40));
+	
+		
+		
 		
 		stopCnt	=	new JTextField("5000");
 		stopCnt.setBorder(BorderFactory.createTitledBorder("Detection threshold"));		
 		quality	=	new JTextField("200");
 		quality.setBorder(BorderFactory.createTitledBorder("Detection quality"));		
 		
-		panel.add(minA);
-		panel.add(maxA);		
-		panel.add(minB);
-		panel.add(maxB);
+		
+		
 		
 		panel.add(quality);
 		panel.add(stopCnt);
