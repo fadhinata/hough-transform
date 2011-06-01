@@ -9,6 +9,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuBar;
+import javax.swing.SwingUtilities;
 
 import circledetection.util.JAIOperatorRegister;
 
@@ -152,11 +153,16 @@ public class ApplicationFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
+	
 		JAIOperatorRegister.registerOperators();
-		ApplicationFrame ap = ApplicationFrame.getInstance();
-		ap.initComponents();
-		System.out.println(ap.getContentPane().getWidth() + ", "
-				+ ap.getHeight());
+		SwingUtilities.invokeLater(new Runnable() {
+		      public void run() {
+		    	  ApplicationFrame ap = ApplicationFrame.getInstance();
+		    	  ap.initComponents();
+		    	  System.out.println(ap.getContentPane().getWidth() + ", "
+		    			  + ap.getHeight());
+		      }
+		    });
 	}
 
 

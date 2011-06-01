@@ -13,10 +13,11 @@ import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.image.BufferedImage;
+import java.util.Observer;
 
 import javax.swing.JPanel;
 
-public class ExtandableAtom extends JPanel implements MouseListener {
+public class ExtandableAtom extends  JPanel implements MouseListener {
 
     private static final long serialVersionUID = 1L;
     private JPanel panel;
@@ -26,9 +27,10 @@ public class ExtandableAtom extends JPanel implements MouseListener {
     private BufferedImage open, closed;
     public Rectangle target;
     final int OFFSET = 30, PAD = 5;
-
+    private MyObservable o;
     ExtandableAtom(String text, JPanel panel) {
-        this.text = text;
+        o = new MyObservable();
+    	this.text = text;
         this.panel = panel;
         this.addMouseListener(this);
         font = new Font("sans-serif", Font.PLAIN, 12);
@@ -41,14 +43,22 @@ public class ExtandableAtom extends JPanel implements MouseListener {
         setRequestFocusEnabled(true);
     }
 
+    public void addObserver(Observer observer)
+    {
+    	o.addObserver(observer);
+    }
     @Override
     public void mousePressed(MouseEvent e) {
        
         if (target.contains(e.getPoint())) {
             toggleSelection();
             togglePanelVisibility();
+            System.out.println(o.countObservers());
+            o.setChanged();
+            o.notifyObservers(this);
         }
     }
+    
     
     private void togglePanelVisibility() {
       
@@ -64,6 +74,17 @@ public class ExtandableAtom extends JPanel implements MouseListener {
     public void toggleSelection() {
         selected = !selected;
         repaint();
+    }
+    public boolean isSelected()
+    {
+    	return selected;
+    }
+    public void close()
+    {
+    	selected = false;
+    	panel.setVisible(false);
+	    this.getParent().validate();
+    	repaint();
     }
 
     @Override

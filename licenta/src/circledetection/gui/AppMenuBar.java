@@ -16,6 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import circledetection.gui.frame.ApplicationFrame;
@@ -117,40 +118,47 @@ public class AppMenuBar  extends JMenuBar{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser imageChooser = new JFileChooser();
-				imageChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				imageChooser.setMultiSelectionEnabled(false);
-				FileFilter imageFilter = new FileFilter() {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
 
-					@Override
-					public String getDescription() {
-						return "Images (*.jpg, *.jpeg, *.bmp,*png)";
+						JFileChooser imageChooser = new JFileChooser();
+						imageChooser
+								.setFileSelectionMode(JFileChooser.FILES_ONLY);
+						imageChooser.setMultiSelectionEnabled(false);
+						FileFilter imageFilter = new FileFilter() {
+
+							@Override
+							public String getDescription() {
+								return "Images (*.jpg, *.jpeg, *.bmp,*png)";
+							}
+
+							@Override
+							public boolean accept(File pathname) {
+								if (pathname == null)
+									return false;
+								if (pathname.isDirectory())
+									return true;
+								return pathname.getName().toLowerCase()
+										.endsWith("jpg")
+										|| pathname.getName().toLowerCase()
+												.endsWith("jpeg")
+										|| pathname.getName().toLowerCase()
+												.endsWith("bmp")
+										|| pathname.getName().toLowerCase()
+												.endsWith("png");
+							}
+						};
+						imageChooser.setFileFilter(imageFilter);
+						imageChooser.setAcceptAllFileFilterUsed(false);
+						if (imageChooser.showOpenDialog((Component) mainFrame) == JFileChooser.APPROVE_OPTION) {
+							File path = imageChooser.getSelectedFile();
+							mainFrame.setFilePath(path.getPath());
+							mainFrame.showImage();
+						}
 					}
 
-					@Override
-					public boolean accept(File pathname) {
-						if (pathname == null)
-							return false;
-						if (pathname.isDirectory())
-							return true;
-						return pathname.getName().toLowerCase().endsWith("jpg")
-								|| pathname.getName().toLowerCase()
-										.endsWith("jpeg")
-								|| pathname.getName().toLowerCase()
-										.endsWith("bmp") || pathname.getName().toLowerCase()
-										.endsWith("png");
-					}
-				};
-				imageChooser.setFileFilter(imageFilter);
-				imageChooser.setAcceptAllFileFilterUsed(false);
-				if (imageChooser.showOpenDialog((Component) mainFrame) == JFileChooser.APPROVE_OPTION) {
-					File path = imageChooser.getSelectedFile();
-					mainFrame.setFilePath(path.getPath());
-					mainFrame.showImage();
-				}
-
+				});
 			}
-
 		});
 		JMenuItem save = new JMenuItem("Save");
 		JMenuItem close = new JMenuItem("Close");
