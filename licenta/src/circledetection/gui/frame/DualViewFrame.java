@@ -31,16 +31,28 @@ public class DualViewFrame extends ImageFrame {
 			
 		JScrollPane sourceScrollPane = null;
 		if (!sourceImage.hasContent()) {
-			sourceImage.createImage(filePath);
-			sourceImage.display();
-			sourceScrollPane  = new JScrollPane(sourceImage,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			new Thread() {
+				public void run() {
+					sourceImage.createImage(filePath);
+					sourceImage.display();
+
+				}
+			}.start();
+			sourceScrollPane = new JScrollPane(sourceImage,
+					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		}
 		JScrollPane workScrollPane = null;
 		if (!workImage.hasContent())
 		{
-			workImage.createImage(filePath);
-			workImage.display(Operators.convertToGrayScale(workImage.getSource()));
+			new Thread() {
+				public void run() {
+					workImage.createImage(filePath);
+					workImage.display(Operators.convertToGrayScale(workImage.getSource()));
+
+				}
+			}.start();
 			workScrollPane = new JScrollPane(workImage,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 			
 		}	
@@ -59,7 +71,7 @@ public class DualViewFrame extends ImageFrame {
 //		imageFrame.repaint();
 //		imageFrame.revalidate();
 		imageFrame.setVisible(true);
-		splitPane.setDividerLocation(imageFrame.getWidth()/2);
+		splitPane.setDividerLocation(.5);
 		contentPane.repaint();
 
 	}

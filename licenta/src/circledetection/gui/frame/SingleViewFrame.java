@@ -31,8 +31,13 @@ public class SingleViewFrame extends ImageFrame {
 //		}
 		if(!workImage.hasContent())
 		{
-			workImage.createImage(filePath);
-			workImage.display(Operators.convertToGrayScale(workImage.getSource()));
+			new Thread(){
+				public void run(){
+					workImage.createImage(filePath);
+					workImage.display(Operators.convertToGrayScale(workImage.getSource()));
+					
+				}
+			}.start();
 			
 			
 		}	
