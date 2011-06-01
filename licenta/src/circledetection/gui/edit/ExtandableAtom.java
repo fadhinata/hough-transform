@@ -163,4 +163,9 @@ public class ExtandableAtom extends  JPanel implements MouseListener {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public JPanel getPanel() {
+		// TODO Auto-generated method stub
+		return panel;
+	}
 }
