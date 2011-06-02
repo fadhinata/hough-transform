@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.image.renderable.ParameterBlock;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -83,6 +84,15 @@ public class EditPanel extends JInternalFrame implements Observer{
 	        edgePanel.setVisible(false);
 	        
 	        HoughEllipseConfigurationPanel houghPanel = new HoughEllipseConfigurationPanel();
+			ParameterBlock pb = new ParameterBlock();
+			pb.add(59); // minA - big radius range
+			pb.add(71); // maxA
+			pb.add(59); // minB - small radius range
+			pb.add(71); // maxB
+			pb.add(100); // the quality of the detected ellipse
+			pb.add(5000); // threshold
+		
+			houghPanel.setParameters(pb);
 	        ExtandableAtom houghAtom = new ExtandableAtom("Hough Transform", houghPanel);
 	        list.add(houghAtom);
 	        houghAtom.addObserver(this);

@@ -54,15 +54,15 @@ public class JAIOperatorRegister
 //            opRegistry.registerDescriptor(circlesDescriptor);
 //            RIFRegistry.register(opRegistry, operationName, "", rif);
 //            
-//            //*********************************************************************
-//            //********	houghellipses
-//            //*********************************************************************            
-//            HoughEllipseDescriptor ellipseDescriptor = new HoughEllipseDescriptor();
-//            operationName = "houghellipses";
-//            rif = ellipseDescriptor;
-//            opRegistry.registerDescriptor(ellipseDescriptor);
-//            RIFRegistry.register(opRegistry, operationName, "", rif);
-//            
+            //*********************************************************************
+            //********	houghellipses
+            //*********************************************************************            
+            HoughEllipseDescriptor ellipseDescriptor = new HoughEllipseDescriptor();
+            operationName = "houghellipses";
+            rif = ellipseDescriptor;
+            opRegistry.registerDescriptor(ellipseDescriptor);
+            RIFRegistry.register(opRegistry, operationName, "", rif);
+            
 //            //*********************************************************************
 //            //********	cannyedge
 //            //*********************************************************************
