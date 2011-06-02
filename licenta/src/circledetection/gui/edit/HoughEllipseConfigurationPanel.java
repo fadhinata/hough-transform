@@ -32,6 +32,7 @@ import java.util.Hashtable;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,6 +40,10 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import circledetection.gui.ImagePanel;
+import circledetection.gui.frame.ApplicationFrame;
+import circledetection.util.Operators;
 
 public class HoughEllipseConfigurationPanel extends JPanel implements ActionListener,ChangeListener
 {
@@ -63,10 +68,11 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 	
 	private Color 		foreGround		=	 new Color(157,172,189,200);
 	private Color 		backGround		=	 new Color(198,210,162,255);
+	private JButton detectCircles;
 	
 	public HoughEllipseConfigurationPanel()
 	{		
-		canvasDim	=	new Dimension(180,200);
+		canvasDim	=	new Dimension(180,170);
 		buildGui();
 		repaintCanvas();
 	}
@@ -83,12 +89,14 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		JComponent maj	= createMajorAxisPanel();
 		maj.setPreferredSize(new Dimension(this.canvasDim.width,100));
 		JPanel pmaj		=	new JPanel(new FlowLayout(FlowLayout.LEFT) );
+		pmaj.setBackground(Color.LIGHT_GRAY);
 		pmaj.add(maj);
 		panel.add("Center",pmaj);	// major axis;		
 		
 		JComponent min	= createMinorAxisPanel();
 		min.setPreferredSize(new Dimension(this.canvasDim.width,100));
 		JPanel pmin		=	new JPanel();
+		pmin.setBackground(Color.LIGHT_GRAY);
 		pmin.setLayout(new BoxLayout(pmin,BoxLayout.Y_AXIS));
 		pmin.add(min);
 		panel.add("South",pmin);				
@@ -114,6 +122,7 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		GridBagLayout gridLayout = new GridBagLayout();
 	
 		JPanel 	panel	=	new JPanel(gridLayout);
+		panel.setBackground(Color.LIGHT_GRAY);
 		panel.setBorder(BorderFactory.createTitledBorder("Large Ellipse"));
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -122,7 +131,7 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		c.gridx = 0;
 		c.gridy = 0;
 
-		maxMajor	=	createSlider(JSlider.HORIZONTAL,"H",this.canvasDim.width / 2);	
+		maxMajor	=	createSlider(JSlider.HORIZONTAL,"W",this.canvasDim.width / 2);	
 		panel.add(maxMajor,c);
 
 		c.ipadx = 0; 
@@ -139,7 +148,7 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		c.gridx = 0;
 		c.gridy = 1;
 		
-		maxMinor	=	createSlider(JSlider.HORIZONTAL,"V",this.canvasDim.width / 2);	
+		maxMinor	=	createSlider(JSlider.HORIZONTAL,"H",this.canvasDim.width / 2);	
 		panel.add(maxMinor,c);
 		
 		c.ipadx = 0;      
@@ -163,6 +172,7 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		GridBagLayout gridLayout = new GridBagLayout();
 		
 		JPanel 	panel	=	new JPanel(gridLayout);
+		panel.setBackground(Color.LIGHT_GRAY);
 		panel.setBorder(BorderFactory.createTitledBorder("Small Ellipse"));
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -170,7 +180,7 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 //		c.gridwidth = 3;
 		c.gridx = 0;
 		c.gridy = 0;
-		minMajor	=	createSlider(JSlider.HORIZONTAL,"H",this.canvasDim.height / 2);	
+		minMajor	=	createSlider(JSlider.HORIZONTAL,"W",this.canvasDim.height / 2);	
 		panel.add(minMajor,c);
 
 	
@@ -190,7 +200,7 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		c.gridx = 0;
 		c.gridy = 1;
 		
-		minMinor	=	createSlider(JSlider.HORIZONTAL,"V",this.canvasDim.height / 2);	
+		minMinor	=	createSlider(JSlider.HORIZONTAL,"H",this.canvasDim.height / 2);	
 		panel.add(minMinor,c);
 
 		c.ipadx = 0;      
@@ -208,27 +218,6 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		
 		return panel;
 		
-//		
-//		JPanel 	panel	=	new JPanel(new GridLayout(2,3));
-//		panel.setBorder(BorderFactory.createTitledBorder("Small Ellipse"));
-//		
-//		maxMinor	=	createSlider(JSlider.HORIZONTAL,"Max",this.canvasDim.width / 2);
-//		maxB = new JLabel();
-//		maxB.setBorder(BorderFactory.createTitledBorder(""));
-//
-//		minMinor	=	createSlider(JSlider.HORIZONTAL,"Min",this.canvasDim.height / 2);	
-//		minB = new JLabel();
-//		minB.setBorder(BorderFactory.createTitledBorder(""));		
-//		
-//		maxB.setText(String.valueOf(this.maxMinor.getValue()));
-//		minB.setText(String.valueOf(this.minMinor.getValue()));
-//		
-//		panel.add(maxMinor);
-//		panel.add(maxB);
-//		panel.add(minMinor);
-//		panel.add(minB);
-//		
-//		return panel;
 	}
 	
 	private JSlider createSlider(int orient,String title,int max)
@@ -240,6 +229,7 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		//slider.setPaintLabels(true);
 		//slider.setPaintTicks(true);
 		slider.setPaintTrack(true);
+		slider.setBackground(Color.LIGHT_GRAY);
 		Hashtable<Integer, JLabel> labels = new Hashtable<Integer, JLabel>();
 		// key , value
 		for(int i=0;i<=max;i+=10)
@@ -263,24 +253,33 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 	public JComponent createStatusPanel()
 	{
 		JPanel 	panel	=	new JPanel(new GridLayout(3,2));
-		
-		
+		panel.setBackground(Color.LIGHT_GRAY);		
 //		maxA.setPreferredSize(new Dimension(100,40));
 	
 		
 		
 		
 		stopCnt	=	new JTextField("5000");
+//		stopCnt.setBackground(Color.white);
 		stopCnt.setBorder(BorderFactory.createTitledBorder("Detection threshold"));		
 		quality	=	new JTextField("200");
 		quality.setBorder(BorderFactory.createTitledBorder("Detection quality"));		
-		
-		
-		
+//		quality.setForeground(Color.LIGHT_GRAY);
+		detectCircles = new JButton("Detect Ellipses");
+		detectCircles.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				ApplicationFrame frame = ApplicationFrame.getInstance();
+				ImagePanel workImg = frame.getImageFrame().getWorkImage();
+				workImg.display(Operators.houghEllipse(workImg.getSource(), getParameters()));
+				workImg.revalidate();
+			}
+		});
 		
 		panel.add(quality);
 		panel.add(stopCnt);
-		
+		panel.add(detectCircles);
 		return panel;
 	}
 		

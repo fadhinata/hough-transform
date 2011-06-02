@@ -214,6 +214,13 @@ public class Operators {
 		return (PlanarImage) JAI.create("GradientMagnitude", pb);
 	
 	}
-	
+
+	public static PlanarImage houghEllipse(PlanarImage source, ParameterBlock pb) {
+				
+		pb.addSource(source);
+		return (PlanarImage) JAI.create("HoughEllipses", pb);
+		
+	}
+
 
 }
