@@ -160,8 +160,8 @@ public class EllipseDescriptor
 			cx[i] =  ((EllipseDescriptor)ellipses.elementAt(i)).center.getX();
 			cy[i] =  ((EllipseDescriptor)ellipses.elementAt(i)).center.getY();
 		}
-		double meanX=0.0;//	= 	Utils.getHarmonicMean(cx);
-		double meanY=0.0;//	=	Utils.getHarmonicMean(cy);
+		double meanX= 	Utils.getHarmonicMean(cx);
+		double meanY=	Utils.getHarmonicMean(cy);
 		
 		int centroid 	= 	-1;
 		double	dist	= 	Double.MAX_VALUE;

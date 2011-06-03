@@ -11,7 +11,6 @@
  */
 package circledetection.util;
 
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -20,7 +19,6 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.UntiledOpImage;
@@ -31,11 +29,11 @@ import javax.media.jai.UntiledOpImage;
 @SuppressWarnings("unchecked")
 class HoughEllipseOpImage  extends UntiledOpImage
 {	
-	private double  minA;	// major axis
-	private double  maxA;
+	private double  majAxisSmallEllipse;	// major axis
+	private double  majAxisLargeEllipse;
 	
-	private double  minB;	// minor axis
-	private double  maxB;
+	private double  minAxisSmallEllipse;	// minor axis
+	private double  minAxisLargeEllipse;
 	
 	private boolean debug;
 	
@@ -53,10 +51,10 @@ class HoughEllipseOpImage  extends UntiledOpImage
 	public HoughEllipseOpImage(RenderedImage source, ImageLayout layout, Integer minMajorAxis, Integer maxMajorAxis , Integer minMinorAxis ,Integer maxMinorAxis,Integer minVotes,Integer idleStop, Float maxPairs, Boolean debug)
     {
     	super(source, null, layout);                
-        this.minA = (double)minMajorAxis.intValue();
-        this.minB = (double)minMinorAxis.intValue();
-        this.maxA = (double)maxMajorAxis.intValue();
-        this.maxB = (double)maxMinorAxis.intValue();
+        this.majAxisSmallEllipse = (double)minMajorAxis.intValue();
+        this.minAxisSmallEllipse = (double)minMinorAxis.intValue();
+        this.majAxisLargeEllipse = (double)maxMajorAxis.intValue();
+        this.minAxisLargeEllipse = (double)maxMinorAxis.intValue();
         this.maxPairs = maxPairs;
         this.debug = debug;
         this.MIN_VOTES_TO_DETECT_ELLIPSE = minVotes.intValue();
@@ -68,7 +66,6 @@ class HoughEllipseOpImage  extends UntiledOpImage
     protected void computeImage(Raster[] srcarr, WritableRaster dst, Rectangle destRect)
     {
     	Raster 			src  = srcarr[0];
-    	// get edge points
     	double edge[][];
     	ArrayList<Point> _edge  = new ArrayList<Point>();
     	int width  		= src.getWidth();
@@ -97,8 +94,8 @@ class HoughEllipseOpImage  extends UntiledOpImage
     		edge[i][2] = 1;									// punct activ
     	}
     	
-    	if(maxB > maxA)
-    		maxB = maxA;
+    	if(minAxisLargeEllipse > majAxisLargeEllipse)
+    		minAxisLargeEllipse = majAxisLargeEllipse;
     	
         // RHT	-	Randomized Hough Transform
         // max nr of pairs about 50 % of img        
@@ -111,7 +108,7 @@ class HoughEllipseOpImage  extends UntiledOpImage
         	
         int currentPair 	= 0;
         
-        int accLength		= (int)(this.maxA - this.minB);
+        int accLength		= (int)(this.majAxisLargeEllipse - this.minAxisSmallEllipse);
      	accumulator 		= new int[accLength];
      	clear(accumulator);
      	
@@ -154,7 +151,7 @@ class HoughEllipseOpImage  extends UntiledOpImage
         	// am punctele
         	dP1P2 	= Point2D.distance(edge[p1][0],edge[p1][1],edge[p2][0],edge[p2][1]);
         	
-        	if( dP1P2 >= 2*minA && dP1P2 <= 2*maxA )
+        	if( dP1P2 >= 2*majAxisSmallEllipse && dP1P2 <= 2*majAxisLargeEllipse )
 			{        	
 				currentPair++;	
         		dst.setSample((int)edge[p1][0],(int)edge[p1][1],0,Utils.WHITE);
@@ -170,16 +167,16 @@ class HoughEllipseOpImage  extends UntiledOpImage
 						continue;					
 					d 		= Point2D.distance(edge[p3][0],edge[p3][1],cx,cy);					
 					
-					if( d >= this.minB && d <= a )
+					if( d >= this.minAxisSmallEllipse && d <= a )
 					{
 						f = Point2D.distance(edge[p3][0],edge[p3][1],edge[p2][0],edge[p2][1]);
 						cos = (a*a + d*d - f*f) / (2*a*d);
 						b   = Math.sqrt( (a*a*d*d*(1-cos*cos)) / (a*a - d*d*cos*cos));
 						
-						if( b > maxB )
+						if( b > minAxisLargeEllipse )
 							continue;
 								
-						bIDX   = (int)Math.round(b - minB);
+						bIDX   = (int)Math.round(b - minAxisSmallEllipse);
 						
 						if(bIDX < 0 || bIDX >= accumulator.length)
 							continue;
@@ -206,7 +203,7 @@ class HoughEllipseOpImage  extends UntiledOpImage
 				// find max in acc array
 				maxData 			= this.max(accumulator);
 				maxAccElement 		= maxData[1];
-				houghMinorLength 	= maxData[0] + (int)minB;
+				houghMinorLength 	= maxData[0] + (int)minAxisSmallEllipse;
 				// am elipsa posibila cu val = raza mica
 				
 				if( maxAccElement >= this.MIN_VOTES_TO_DETECT_ELLIPSE )
@@ -273,8 +270,8 @@ class HoughEllipseOpImage  extends UntiledOpImage
 			drawPixel(1,(int)desc.getCenter().getX(),(int)desc.getCenter().getY(),dst,5);
 			drawPixel(2,(int)desc.getCenter().getX(),(int)desc.getCenter().getY(),dst,5);
 			
-			drawPixel(1,(int)desc.getVertex1().getX(),(int)desc.getVertex1().getY(),dst,5);
-			drawPixel(1,(int)desc.getVertex2().getX(),(int)desc.getVertex2().getY(),dst,5);
+			drawPixel(0,(int)desc.getVertex1().getX(),(int)desc.getVertex1().getY(),dst,5);
+			drawPixel(0,(int)desc.getVertex2().getX(),(int)desc.getVertex2().getY(),dst,5);
 			if(this.debug) {
 				System.out.println(desc.toString());
 			}
@@ -288,7 +285,7 @@ class HoughEllipseOpImage  extends UntiledOpImage
    		
 		for(int i=0;i<w;i++)
    			for(int j=0;j<w;j++)   			
-   				dst.setSample(_x+i,_y+j,band,Utils.WHITE);   		
+   				dst.setSample(_x+i,_y+j,band,255);   		
    	}
    
    	@SuppressWarnings("unused")
