@@ -17,7 +17,10 @@ import java.awt.image.renderable.ParameterBlock;
 import java.awt.image.renderable.RenderedImageFactory;
 
 import javax.media.jai.ImageLayout;
+import javax.media.jai.JAI;
 import javax.media.jai.OperationDescriptorImpl;
+
+import org.jfree.chart.plot.ThermometerPlot;
 
 class HoughEllipseDescriptor extends OperationDescriptorImpl implements RenderedImageFactory
 {	
@@ -40,7 +43,7 @@ class HoughEllipseDescriptor extends OperationDescriptorImpl implements Rendered
     @SuppressWarnings("unchecked")
 	private static final Class[] paramClasses = { java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class ,java.lang.Integer.class , java.lang.Float.class, Boolean.class};
 
-    private static final Object[] paramDefaults = { new Integer(100), new Integer(130), new Integer(50), new Integer(60), new Integer(180), new Integer(1000), new Float(0.5), new Boolean(true)};
+    private static final Object[] paramDefaults = { new Integer(100), new Integer(130), new Integer(50), new Integer(60), new Integer(180), new Integer(1000), new Float(0.2), new Boolean(true)};
 
 
     public HoughEllipseDescriptor()
@@ -51,10 +54,14 @@ class HoughEllipseDescriptor extends OperationDescriptorImpl implements Rendered
 
     public RenderedImage create(ParameterBlock pb, RenderingHints hints)
     {
+    
+    		System.out.println("create houghDesc");
             if (!validateParameters(pb))
             {
                     return null;
             }
+    		System.out.println(Thread.currentThread().getName());
+
             return new HoughEllipseOpImage(pb.getRenderedSource(0), new ImageLayout(), 
             			(Integer) pb.getObjectParameter(0), 
             			(Integer) pb.getObjectParameter(1), 

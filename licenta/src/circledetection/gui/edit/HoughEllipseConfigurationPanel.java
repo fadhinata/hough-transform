@@ -14,6 +14,7 @@ package circledetection.gui.edit;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
@@ -28,7 +29,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.renderable.ParameterBlock;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import javax.media.jai.JAI;
+import javax.media.jai.PlanarImage;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -36,16 +41,21 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import circledetection.gui.ImagePanel;
 import circledetection.gui.frame.ApplicationFrame;
+import circledetection.util.EllipseDescriptor;
+import circledetection.util.EllipseDetectedData;
 import circledetection.util.Operators;
 
-public class HoughEllipseConfigurationPanel extends JPanel implements ActionListener,ChangeListener
+public class HoughEllipseConfigurationPanel extends JPanel implements ChangeListener
 {
 	/**
 	 * 
@@ -69,6 +79,7 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 	private Color 		foreGround		=	 new Color(157,172,189,200);
 	private Color 		backGround		=	 new Color(198,210,162,255);
 	private JButton detectCircles;
+	private JProgressBar progressBar;
 	
 	public HoughEllipseConfigurationPanel()
 	{		
@@ -259,40 +270,28 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		
 		
 		
-		stopCnt	=	new JTextField("5000");
-//		stopCnt.setBackground(Color.white);
-		stopCnt.setBorder(BorderFactory.createTitledBorder("Detection threshold"));		
+//		stopCnt	=	new JTextField("5000");
+////		stopCnt.setBackground(Color.white);
+//		stopCnt.setBorder(BorderFactory.createTitledBorder("Detection threshold"));		
 		quality	=	new JTextField("200");
 		quality.setBorder(BorderFactory.createTitledBorder("Detection quality"));		
 //		quality.setForeground(Color.LIGHT_GRAY);
+		progressBar = new JProgressBar();
 		detectCircles = new JButton("Detect Ellipses");
 		detectCircles.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				ApplicationFrame frame = ApplicationFrame.getInstance();
-				ImagePanel workImg = frame.getImageFrame().getWorkImage();
-				workImg.display(Operators.houghEllipse(workImg.getSource(), getParameters()));
-				workImg.revalidate();
+				System.out.println("action performed");
+				detectedEllipsesAction();
 			}
 		});
 		
 		panel.add(quality);
-		panel.add(stopCnt);
+		panel.add(progressBar);
 		panel.add(detectCircles);
 		return panel;
 	}
-		
-	public void actionPerformed(ActionEvent e)
-	{
-		/*if(e.getActionCommand().equals(HoughEllipseConfigurationPanel.ACTION_OK))
-		{
-		}
-		else if(e.getActionCommand().equals(HoughEllipseConfigurationPanel.ACTION_CANCEL))
-		{
-		}*/
-	}
-	
 	private void drawGrid(int size,Graphics2D graphics,Dimension dim)
 	{
 		graphics.setColor(this.backGround.darker());
@@ -362,14 +361,14 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
 		Integer mnB = (Integer) pb.getObjectParameter(2); // minB
 		Integer mxB = (Integer) pb.getObjectParameter(3); // maxB
 		Integer qEl = (Integer) pb.getObjectParameter(4); // qual
-		Integer sCt = (Integer) pb.getObjectParameter(5); // stop
+//		Integer sCt = (Integer) pb.getObjectParameter(5); // stop
 		
 		maxA.setText(mxA.toString());
 		minA.setText(mnA.toString());
 		maxB.setText(mxB.toString());
 		minB.setText(mnB.toString());		
 		quality.setText(qEl.toString());		
-		stopCnt.setText(sCt.toString());		
+//		stopCnt.setText(sCt.toString());		
 		
 		this.maxMajor.setValue(mxA.intValue());
 		this.minMajor.setValue(mnA.intValue());
@@ -389,9 +388,56 @@ public class HoughEllipseConfigurationPanel extends JPanel implements ActionList
     	pb.add(Integer.valueOf(minB.getText()));
     	pb.add(Integer.valueOf(maxB.getText()));
     	pb.add(Integer.valueOf(quality.getText()));
-    	pb.add(Integer.valueOf(stopCnt.getText()));
+//    	pb.add(Integer.valueOf(stopCnt.getText()));
     	    	
     	return pb;
+    }
+    
+   private void detectedEllipsesAction()
+    {
+		final ApplicationFrame frame = ApplicationFrame.getInstance();
+		final ImagePanel workImg;
+//		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		workImg = frame.getImageFrame().getWorkImage();
+//		workImg.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+		detectCircles.setEnabled(false);
+		progressBar.setIndeterminate(true);		
+		
+		class EllipseFinder extends SwingWorker<PlanarImage, Object> {
+
+
+			@Override
+			protected PlanarImage doInBackground() throws Exception {
+				System.out.println("do in background");
+				System.out.println(SwingUtilities.isEventDispatchThread());
+				ParameterBlock pb = getParameters();
+				pb.addSource(workImg.getSource());
+				return (PlanarImage)JAI.create("HoughEllipses",pb);
+//				return  Operators.houghEllipse(workImg.getSource(), getParameters());
+			}
+			
+			protected void done() {
+				try {
+					PlanarImage img = get();
+					workImg.display(img);
+					workImg.revalidate();
+					System.out.println("done");
+//					workImg.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//					setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+					progressBar.setIndeterminate(false);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		
+		};
+		(new EllipseFinder()).execute();
+
     }
 }
 

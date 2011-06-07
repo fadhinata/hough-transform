@@ -1,11 +1,14 @@
 package circledetection.util;
 
+import java.awt.EventQueue;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.renderable.ParameterBlock;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
@@ -18,6 +21,8 @@ import javax.media.jai.RasterFactory;
 import javax.media.jai.RenderedOp;
 import javax.media.jai.operator.MedianFilterDescriptor;
 import javax.media.jai.operator.MedianFilterShape;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 
 import circledetection.gui.HistogramChartPanel;
@@ -25,41 +30,57 @@ import circledetection.gui.HistogramChartPanel;
 public class Operators {
 	
 	public static PlanarImage convertToGrayScale(PlanarImage source) {
+//
+//		ColorSpace colorSpaceInput = source.getColorModel().getColorSpace();
+//		ColorModel colorModelInput = RasterFactory.createComponentColorModel(
+//				source.getSampleModel().getDataType(), colorSpaceInput, false,
+//				false, Transparency.OPAQUE);
+//
+//		ImageLayout imageLayoutInput = new ImageLayout();
+//		imageLayoutInput.setColorModel(colorModelInput);
+//		RenderingHints RenderingHintsInput = new RenderingHints(
+//				JAI.KEY_IMAGE_LAYOUT, imageLayoutInput);
+//		ParameterBlock parameterBlockInput = new ParameterBlock();
+//		parameterBlockInput.addSource(source);
+//		parameterBlockInput.add(source.getSampleModel().getDataType());
+//		PlanarImage sourceWithProfile = JAI.create("format",
+//				parameterBlockInput, RenderingHintsInput);
+//
+//		ColorSpace colorSpaceOutput = ColorSpace
+//				.getInstance(ColorSpace.CS_GRAY);
+//		ColorModel colorModelOutput = RasterFactory.createComponentColorModel(
+//				sourceWithProfile.getSampleModel().getDataType(),
+//				colorSpaceOutput, false, false, Transparency.OPAQUE);
+//
+//		ImageLayout imageLayoutOutput = new ImageLayout();
+//		imageLayoutOutput.setSampleModel(colorModelOutput
+//				.createCompatibleSampleModel(sourceWithProfile.getWidth(),
+//						sourceWithProfile.getHeight()));
+//		RenderingHints renderingHintsOutput = new RenderingHints(
+//				JAI.KEY_IMAGE_LAYOUT, imageLayoutOutput);
+//		ParameterBlock parameterBlockOutput = new ParameterBlock();
+//		parameterBlockOutput.addSource(sourceWithProfile);
+//		parameterBlockOutput.add(colorModelOutput);
+//
+//		return JAI.create("ColorConvert", parameterBlockOutput,
+//				renderingHintsOutput);
 
-		ColorSpace colorSpaceInput = source.getColorModel().getColorSpace();
-		ColorModel colorModelInput = RasterFactory.createComponentColorModel(
-				source.getSampleModel().getDataType(), colorSpaceInput, false,
-				false, Transparency.OPAQUE);
+		PlanarImage dst = null;
+        double b = 0.0;
+        double[][] matrix = {
+                                { .114D, 0.587D, 0.299D, b },
+                                { .114D, 0.587D, 0.299D, b },
+                                { .114D, 0.587D, 0.299D, b }
+                            };
 
-		ImageLayout imageLayoutInput = new ImageLayout();
-		imageLayoutInput.setColorModel(colorModelInput);
-		RenderingHints RenderingHintsInput = new RenderingHints(
-				JAI.KEY_IMAGE_LAYOUT, imageLayoutInput);
-		ParameterBlock parameterBlockInput = new ParameterBlock();
-		parameterBlockInput.addSource(source);
-		parameterBlockInput.add(source.getSampleModel().getDataType());
-		PlanarImage sourceWithProfile = JAI.create("format",
-				parameterBlockInput, RenderingHintsInput);
+        if ( source != null ) {
+            ParameterBlock pb = new ParameterBlock();
+            pb.addSource(source);
+            pb.add(matrix);
+            dst = JAI.create("bandcombine", pb, null);
+        }
 
-		ColorSpace colorSpaceOutput = ColorSpace
-				.getInstance(ColorSpace.CS_GRAY);
-		ColorModel colorModelOutput = RasterFactory.createComponentColorModel(
-				sourceWithProfile.getSampleModel().getDataType(),
-				colorSpaceOutput, false, false, Transparency.OPAQUE);
-
-		ImageLayout imageLayoutOutput = new ImageLayout();
-		imageLayoutOutput.setSampleModel(colorModelOutput
-				.createCompatibleSampleModel(sourceWithProfile.getWidth(),
-						sourceWithProfile.getHeight()));
-		RenderingHints renderingHintsOutput = new RenderingHints(
-				JAI.KEY_IMAGE_LAYOUT, imageLayoutOutput);
-		ParameterBlock parameterBlockOutput = new ParameterBlock();
-		parameterBlockOutput.addSource(sourceWithProfile);
-		parameterBlockOutput.add(colorModelOutput);
-
-		return JAI.create("ColorConvert", parameterBlockOutput,
-				renderingHintsOutput);
-
+        return dst;
 	}
 
 
@@ -214,13 +235,39 @@ public class Operators {
 		return (PlanarImage) JAI.create("GradientMagnitude", pb);
 	
 	}
-
-	public static PlanarImage houghEllipse(PlanarImage source, ParameterBlock pb) {
-				
-		pb.addSource(source);
-		return (PlanarImage) JAI.create("HoughEllipses", pb);
-		
-	}
-
+//
+//	public static PlanarImage houghEllipse(PlanarImage source, final ParameterBlock pb) {
+//				
+//		System.out.println("hough ellipses");
+//		pb.addSource(source);
+//		final EllipseDetectedData detectedData = new EllipseDetectedData();
+//		System.out.println(Thread.currentThread().getName());
+//		
+//		new SwingWorker<PlanarImage, Object>()
+//		{
+//
+//			@Override
+//			protected PlanarImage doInBackground() throws Exception {
+//				// TODO Auto-generated method stub
+//				PlanarImage img = (PlanarImage) JAI.create("HoughEllipses",pb);
+//				return null;
+//			}};
+//		
+//	}
+//			@Override
+//			public void run() {
+//				System.out.println("run "+Thread.currentThread().getName());
+//				detectedData.setImage(img);
+//				System.out.println("hough ellipses after create");
+//				
+//				
+//			}
+//		});
+////		@SuppressWarnings("unchecked")
+////		Object obj = img.getProperty(EllipseDescriptor.DETECTED_ELLIPSES);
+////		System.out.println(obj.getClass());
+//		return detectedData.getImage(); 
+//	}
+//
 
 }

@@ -62,6 +62,7 @@ public class JAIOperatorRegister
             rif = ellipseDescriptor;
             opRegistry.registerDescriptor(ellipseDescriptor);
             RIFRegistry.register(opRegistry, operationName, "", rif);
+            rif = null;
             
 //            //*********************************************************************
 //            //********	cannyedge

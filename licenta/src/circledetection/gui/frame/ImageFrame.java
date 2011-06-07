@@ -9,7 +9,7 @@ import circledetection.gui.ImagePanel;
 public abstract class ImageFrame {
 
 	protected String filePath;
-	protected ImagePanel workImage;
+	protected static ImagePanel workImage;
 	//	protected JInternalFrame imageFrame;
 	protected JDesktopPane contentPane;
 

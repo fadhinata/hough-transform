@@ -28,6 +28,7 @@ public class BinaryThresholdOpImage extends UntiledOpImage
 	public BinaryThresholdOpImage(RenderedImage source, ImageLayout layout, double[] l, double[] h)
     {
         super(source, null, layout);
+        System.out.println("binary threshold");
         low	=	new double[3];
         if(l.length<3)
         {
