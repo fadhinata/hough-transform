@@ -12,8 +12,6 @@ import circledetection.util.Operators;
 public class SingleViewFrame extends ImageFrame {
 	
 	private static SingleViewFrame INSTANCE;
-	private JInternalFrame imageFrame;
-
 	private SingleViewFrame(JDesktopPane contentPane, String filePath){
 		super(contentPane,filePath); 
 		imageFrame = new JInternalFrame("Single View Image");
@@ -41,6 +39,8 @@ public class SingleViewFrame extends ImageFrame {
 			
 			
 		}	
+		else 
+			workImage.display();
 		JScrollPane scrollPane = new JScrollPane(workImage,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		//scrollPane.setPreferredSize(new Dimension(work.width, height));
 	

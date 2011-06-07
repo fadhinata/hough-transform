@@ -15,8 +15,6 @@ public class DualViewFrame extends ImageFrame {
 	
 	private static DualViewFrame INSTANCE;
 	private ImagePanel sourceImage;
-	private JInternalFrame imageFrame;
-
 	private DualViewFrame(JDesktopPane contentPane, String filePath)
 	{
 		super(contentPane, filePath);
@@ -53,9 +51,13 @@ public class DualViewFrame extends ImageFrame {
 
 				}
 			}.start();
-			workScrollPane = new JScrollPane(workImage,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 			
 		}	
+		else 
+		{
+			workImage.display();
+		}
+		workScrollPane = new JScrollPane(workImage,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 					sourceScrollPane, workScrollPane);
