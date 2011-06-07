@@ -1,70 +1,20 @@
 package circledetection.util;
 
-import java.awt.EventQueue;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.color.ColorSpace;
-import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.renderable.ParameterBlock;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
-import javax.media.jai.ImageLayout;
 import javax.media.jai.JAI;
 import javax.media.jai.KernelJAI;
 import javax.media.jai.LookupTableJAI;
 import javax.media.jai.PlanarImage;
-import javax.media.jai.RasterFactory;
 import javax.media.jai.RenderedOp;
-import javax.media.jai.operator.MedianFilterDescriptor;
 import javax.media.jai.operator.MedianFilterShape;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-
-
-import circledetection.gui.HistogramChartPanel;
 
 public class Operators {
 	
 	public static PlanarImage convertToGrayScale(PlanarImage source) {
-//
-//		ColorSpace colorSpaceInput = source.getColorModel().getColorSpace();
-//		ColorModel colorModelInput = RasterFactory.createComponentColorModel(
-//				source.getSampleModel().getDataType(), colorSpaceInput, false,
-//				false, Transparency.OPAQUE);
-//
-//		ImageLayout imageLayoutInput = new ImageLayout();
-//		imageLayoutInput.setColorModel(colorModelInput);
-//		RenderingHints RenderingHintsInput = new RenderingHints(
-//				JAI.KEY_IMAGE_LAYOUT, imageLayoutInput);
-//		ParameterBlock parameterBlockInput = new ParameterBlock();
-//		parameterBlockInput.addSource(source);
-//		parameterBlockInput.add(source.getSampleModel().getDataType());
-//		PlanarImage sourceWithProfile = JAI.create("format",
-//				parameterBlockInput, RenderingHintsInput);
-//
-//		ColorSpace colorSpaceOutput = ColorSpace
-//				.getInstance(ColorSpace.CS_GRAY);
-//		ColorModel colorModelOutput = RasterFactory.createComponentColorModel(
-//				sourceWithProfile.getSampleModel().getDataType(),
-//				colorSpaceOutput, false, false, Transparency.OPAQUE);
-//
-//		ImageLayout imageLayoutOutput = new ImageLayout();
-//		imageLayoutOutput.setSampleModel(colorModelOutput
-//				.createCompatibleSampleModel(sourceWithProfile.getWidth(),
-//						sourceWithProfile.getHeight()));
-//		RenderingHints renderingHintsOutput = new RenderingHints(
-//				JAI.KEY_IMAGE_LAYOUT, imageLayoutOutput);
-//		ParameterBlock parameterBlockOutput = new ParameterBlock();
-//		parameterBlockOutput.addSource(sourceWithProfile);
-//		parameterBlockOutput.add(colorModelOutput);
-//
-//		return JAI.create("ColorConvert", parameterBlockOutput,
-//				renderingHintsOutput);
-
 		PlanarImage dst = null;
         double b = 0.0;
         double[][] matrix = {
@@ -85,20 +35,6 @@ public class Operators {
 
 
 	public static PlanarImage adjustContrast(PlanarImage source,double min, double max) {
-		
-//		ParameterBlock pb1 = new ParameterBlock();
-//		pb1.addSource(source); // The source image
-//		pb1.add(null); // The region of the image to scan
-//		pb1.add(1); // The horizontal sampling rate
-//		pb1.add(1); // The vertical sampling rate
-//
-//		// Perform the extrema operation on the source image
-//		RenderedOp op = JAI.create("extrema", pb1);
-//
-//		// // Retrieve both the maximum and minimum pixel value
-//		double[] min = (double[]) op.getProperty("minimum");
-//		double[] max = (double[]) op.getProperty("maximum");
-
 		
 		ParameterBlock pb = null;
 		int bands = source.getSampleModel().getNumBands();
@@ -183,6 +119,25 @@ public class Operators {
 		return (PlanarImage) JAI.create("MedianFilter", pb);
 
 	 }
+	public static PlanarImage gaussianFilter(PlanarImage img)
+	{
+		 float[] gaussianData ={
+            1.0f, 2.0f, 1.0f,
+            2.0f,  4.0f,2.0f,
+            1.0f, 2.0f, 1.0f
+       };
+		 float weight = 1/16f;
+		 for(int i=0;  i<gaussianData.length; i++){
+			 gaussianData[i] = gaussianData[i] * weight;
+		 }
+		 
+		 KernelJAI gaussianKernel	= new KernelJAI(3,3,gaussianData);
+		 ParameterBlock pb = new ParameterBlock();
+		pb.addSource(img);
+		pb.add(gaussianKernel);
+		return JAI.create("convolve", pb);
+		
+	}
 	public static PlanarImage threshold(PlanarImage source, double[] thresholdValue) {
 		ParameterBlock pb1 = new ParameterBlock();
 		pb1.addSource(source); // The source image
