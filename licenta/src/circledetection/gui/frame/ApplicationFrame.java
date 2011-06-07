@@ -3,16 +3,19 @@ package circledetection.gui.frame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Dimension;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import circledetection.gui.AppMenuBar;
+import circledetection.gui.AppToolBar;
+import circledetection.gui.ImagePanel;
 import circledetection.gui.edit.EditPanel;
 import circledetection.util.JAIOperatorRegister;
 
@@ -38,6 +41,8 @@ public class ApplicationFrame extends JFrame {
 	private JInternalFrame histogramFrame;
 
 	private int viewMode = SINGLE_IMAGE_VIEW;
+	private boolean isShowedEditPanel = true;
+	private AppToolBar toolBar;
 	private static Dimension imagePrefferedSize;
 	private static ApplicationFrame INSTANCE;
 
@@ -75,6 +80,14 @@ public class ApplicationFrame extends JFrame {
 		this.imageFrame = imageFrame;
 	}
 
+
+	public boolean isShowedEditPanel() {
+		return isShowedEditPanel;
+	}
+
+	public void setShowedEditPanel(boolean isShowedEditPanel) {
+		this.isShowedEditPanel = isShowedEditPanel;
+	}
 
 	public JInternalFrame getHistogramFrame() {
 		return histogramFrame;
@@ -122,19 +135,44 @@ public class ApplicationFrame extends JFrame {
 		
 		menuBar = new AppMenuBar();
 		this.setJMenuBar(menuBar);
+		
+		toolBar = AppToolBar.getInstance();
+		this.add(toolBar,BorderLayout.PAGE_START);
+		
+		JPanel bottom = new JPanel();
+		bottom.setBackground(Color.LIGHT_GRAY);
+		JLabel nume_lb = new JLabel ("Ellipse Detection");
+		bottom.add(nume_lb ,BorderLayout.CENTER);
+		this.add(bottom,BorderLayout.PAGE_END);
+		
 		this.setVisible(true);
 
+		
 	}
 
 	public void showImage() {
 		
+		ImagePanel workImage = null;
 		if(imageFrame!= null)
-			imageFrame.dispose();
-		if (viewMode == SINGLE_IMAGE_VIEW)
+			{
+				workImage = imageFrame.getWorkImage();
+				imageFrame.dispose();
+			}
+			
+		if (viewMode == SINGLE_IMAGE_VIEW){
+			
 			imageFrame =  SingleViewFrame.getInstance((JDesktopPane)contentPane,filePath);
-		else
+		
+		}
+		else{
 			imageFrame = DualViewFrame.getInstance((JDesktopPane)contentPane, filePath);
-
+			
+		}
+		if(workImage != null)
+		{
+			imageFrame.getWorkImage().setSource(workImage.getSource());
+		
+		}
 		imageFrame.setSize(imagePrefferedSize);
 		imageFrame.show();
 	}
@@ -168,7 +206,12 @@ public class ApplicationFrame extends JFrame {
 
 
 	public void setShowEditPanel(boolean selected) {
-
+		isShowedEditPanel = selected;
+		if(selected)
+			editPanel.setVisible(true);
+		else 
+			editPanel.setVisible(false);
+		
 	}
 
 }

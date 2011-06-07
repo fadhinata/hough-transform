@@ -3,7 +3,6 @@ package circledetection.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -13,7 +12,6 @@ import java.awt.image.renderable.ParameterBlock;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
-import javax.media.jai.TileComputationListener;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -146,6 +144,17 @@ public class ImagePanel extends JPanel implements MouseListener {
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public void clear() {
+		source = null;
+		sourceForZoom = null;
+		
+	}
+
+	public void setSource(PlanarImage source) {
+		this.source = source;
+		
 	}
 
 }

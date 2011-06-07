@@ -1,23 +1,18 @@
 package circledetection.gui;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileFilter;
 
 import circledetection.gui.frame.ApplicationFrame;
 
@@ -56,8 +51,7 @@ public class AppMenuBar  extends JMenuBar{
 			public void actionPerformed(ActionEvent e) {
 			
 				if(group.getSelection().equals(singleView.getModel()))
-					mainFrame.setViewMode(ApplicationFrame.SINGLE_IMAGE_VIEW);
-					mainFrame.showImage();
+					AppActions.singleViewAction();
 			}
 		});
 		group.setSelected(singleView.getModel(),true);
@@ -72,8 +66,7 @@ public class AppMenuBar  extends JMenuBar{
 			public void actionPerformed(ActionEvent e) {
 			
 				if(group.getSelection().equals(dualView.getModel()))
-					mainFrame.setViewMode(ApplicationFrame.DUAL_VIEW);
-					mainFrame.showImage();
+					AppActions.dualViewAction();
 					
 			}
 		});
@@ -81,13 +74,14 @@ public class AppMenuBar  extends JMenuBar{
 		viewMenu.addSeparator();
 		
 		JCheckBoxMenuItem editPanel = new JCheckBoxMenuItem();
+		editPanel.setText("EditPanel");
 		viewMenu.add(editPanel);
 		editPanel.addItemListener(new ItemListener() {
 			
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				
-					mainFrame.setShowEditPanel(viewMenu.isSelected());
+					AppActions.showEditPanelAction(viewMenu.isSelected());
 				
 			}
 		});
@@ -118,61 +112,42 @@ public class AppMenuBar  extends JMenuBar{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-
-						JFileChooser imageChooser = new JFileChooser();
-						imageChooser
-								.setFileSelectionMode(JFileChooser.FILES_ONLY);
-						imageChooser.setMultiSelectionEnabled(false);
-						FileFilter imageFilter = new FileFilter() {
-
-							@Override
-							public String getDescription() {
-								return "Images (*.jpg, *.jpeg, *.bmp,*png)";
-							}
-
-							@Override
-							public boolean accept(File pathname) {
-								if (pathname == null)
-									return false;
-								if (pathname.isDirectory())
-									return true;
-								return pathname.getName().toLowerCase()
-										.endsWith("jpg")
-										|| pathname.getName().toLowerCase()
-												.endsWith("jpeg")
-										|| pathname.getName().toLowerCase()
-												.endsWith("bmp")
-										|| pathname.getName().toLowerCase()
-												.endsWith("png");
-							}
-						};
-						imageChooser.setFileFilter(imageFilter);
-						imageChooser.setAcceptAllFileFilterUsed(false);
-						if (imageChooser.showOpenDialog((Component) mainFrame) == JFileChooser.APPROVE_OPTION) {
-							File path = imageChooser.getSelectedFile();
-							mainFrame.setFilePath(path.getPath());
-							mainFrame.showImage();
-						}
-					}
-
-				});
+				AppActions.openAction();
 			}
 		});
 		JMenuItem save = new JMenuItem("Save");
+		save.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AppActions.saveAction();
+				
+			}
+		});
+		
 		JMenuItem close = new JMenuItem("Close");
+		
 		close.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mainFrame.close();
+				AppActions.closeAction();
+				
+			}
+		});
+		JMenuItem exit = new JMenuItem("Exit");
+		exit.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
 				
 			}
 		});
 		fileMenu.add(open);
 		fileMenu.add(save);
 		fileMenu.add(close);
+		fileMenu.add(exit);
 		add(fileMenu);
 
 		
