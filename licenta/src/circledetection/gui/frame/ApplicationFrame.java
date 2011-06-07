@@ -3,6 +3,7 @@ package circledetection.gui.frame;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
 
 import javax.swing.JDesktopPane;
