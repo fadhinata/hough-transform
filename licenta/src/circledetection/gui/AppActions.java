@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import circledetection.gui.frame.ApplicationFrame;
+import circledetection.gui.frame.ImageFrame;
 
 import com.sun.image.codec.jpeg.ImageFormatException;
 import com.sun.image.codec.jpeg.JPEGCodec;
@@ -73,6 +74,11 @@ public class AppActions {
 				if (imageChooser.showOpenDialog((Component) mainFrame) == JFileChooser.APPROVE_OPTION) {
 					File path = imageChooser.getSelectedFile();
 					mainFrame.setFilePath(path.getPath());
+					ImageFrame imageFrame = mainFrame.getImageFrame();
+					if(imageFrame!=null){
+						imageFrame.getWorkImage().clear();
+						
+					}
 					mainFrame.showImage();
 				}
 				AppToolBar.getInstance().enableButtons();
@@ -140,6 +146,7 @@ public class AppActions {
 	}
 	public static void closeAction() {
 		mainFrame.getImageFrame().close();
+		AppToolBar.getInstance().disableButtons();
 		
 	}
 }

@@ -47,8 +47,8 @@ public class EditPanel extends JInternalFrame implements Observer{
 
 	        this.add(contrastPanel, gbc);
 	        
-	        MedianFilterPanel medianFilterPanel = new MedianFilterPanel();
-	        ExtandableAtom medianFilterAtom = new ExtandableAtom("Median Filter", medianFilterPanel);
+	        FiltersPanel medianFilterPanel = new FiltersPanel();
+	        ExtandableAtom medianFilterAtom = new ExtandableAtom("Median&Gaussian Filter", medianFilterPanel);
 	        list.add(medianFilterAtom); 
 	        medianFilterAtom.addObserver(this);
 	        
@@ -64,6 +64,15 @@ public class EditPanel extends JInternalFrame implements Observer{
 	        this.add(histogramAtom, gbc);
 	        this.add(histogramPanel, gbc);
 	        histogramPanel.setVisible(false);
+
+	        EdgeDetectionPanel edgePanel = new EdgeDetectionPanel();
+	        ExtandableAtom edgeAtom  = new ExtandableAtom("Edge detection", edgePanel);
+	        list.add(edgeAtom);
+	        edgeAtom.addObserver(this);
+	        
+	        this.add(edgeAtom,gbc);
+	        this.add(edgePanel,gbc);
+	        edgePanel.setVisible(false);
 	        
 	        ThresholdPanel thresholdPanel = new ThresholdPanel();
 	        ExtandableAtom thresholdAtom = new ExtandableAtom("Threshold", thresholdPanel);
@@ -74,14 +83,6 @@ public class EditPanel extends JInternalFrame implements Observer{
 	        this.add(thresholdPanel, gbc);
 	        thresholdPanel.setVisible(false);
 	        
-	        EdgeDetectionPanel edgePanel = new EdgeDetectionPanel();
-	        ExtandableAtom edgeAtom  = new ExtandableAtom("Edge detection", edgePanel);
-	        list.add(edgeAtom);
-	        edgeAtom.addObserver(this);
-	        
-	        this.add(edgeAtom,gbc);
-	        this.add(edgePanel,gbc);
-	        edgePanel.setVisible(false);
 	        
 	        HoughEllipseConfigurationPanel houghPanel = new HoughEllipseConfigurationPanel();
 			ParameterBlock pb = new ParameterBlock();
