@@ -27,9 +27,6 @@ public class EdgeDetectionPanel extends JPanel implements ActionListener{
 	}
 	private void initComponents()
 	{
-//		prewitt = new JButton("Histogram");
-//		prewitt.addActionListener(this);
-//		this.add(prewitt);
 
 //		canny = new JButton("Histogram equalization");
 //		canny.addActionListener(this);
@@ -48,6 +45,17 @@ public class EdgeDetectionPanel extends JPanel implements ActionListener{
 
 		this.add(sobel);
 
+		prewitt = new JButton("Prewitt");
+		prewitt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ImagePanel workImage = appFrame.getImageFrame().getWorkImage();
+				workImage.display(Operators.prewitt(workImage.getSource()));
+				
+			}
+		});
+		this.add(prewitt);
 	}
 	public void actionPerformed(ActionEvent e) {
 		appFrame.getHistogramFrame().setVisible(true);

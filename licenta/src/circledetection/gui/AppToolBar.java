@@ -109,16 +109,33 @@ public class AppToolBar extends JToolBar {
        
         redo = new JButton(new ImageIcon(IMG_FOLDER + REDO)); 
         redo.setToolTipText("Redo");
+        this.add(redo);
         
         this.addSeparator();
         
         zoomIn = new JButton(new ImageIcon(IMG_FOLDER + ZOOM_IN));
         zoomIn.setToolTipText("Zoom in");
+        zoomIn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AppActions.zoomIn();
+				
+			}
+		});
         
         this.add(zoomIn);
         
         zoomOut = new JButton(new ImageIcon(IMG_FOLDER + ZOOM_OUT));
         zoomOut.setToolTipText("Zoom out");
+        zoomOut.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AppActions.zoomOut();
+				
+			}
+		});
         this.add(zoomOut);
         
         this.addSeparator();

@@ -2,8 +2,8 @@ package circledetection.gui.frame;
 
 import java.awt.Dimension;
 
+import javax.media.jai.PlanarImage;
 import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
@@ -17,8 +17,7 @@ public class DualViewFrame extends ImageFrame {
 	private ImagePanel sourceImage;
 	private DualViewFrame(JDesktopPane contentPane, String filePath)
 	{
-		super(contentPane, filePath);
-		imageFrame = new JInternalFrame("Dual View Image");
+		super(contentPane, filePath,"Dual View Image");
 		contentPane.add(imageFrame);
 		sourceImage = new ImagePanel();
 	}
@@ -78,11 +77,7 @@ public class DualViewFrame extends ImageFrame {
 
 	}
 
-	@Override
-	public void dispose() {
-		imageFrame.setVisible(false);
-		
-	}
+
 	
 	public static ImageFrame getInstance(JDesktopPane contentPane,
 			String filePath) {
@@ -95,5 +90,32 @@ public class DualViewFrame extends ImageFrame {
 		imageFrame.setSize(size);
 		
 	}
+
+	@Override
+	public void scale(float scaleFactor) {
+		if(scaleFactor == 1.0f)
+		{
+			float sFactor;
+			if(sourceImage.getSource().getWidth() != workImage.getSource().getWidth() )
+				{
+					sFactor = ApplicationFrame.getInstance().getScaleFactor();
+					PlanarImage img = Operators.scale(sourceImage.getSourceForZoom(),sFactor,sFactor);
+					sourceImage.setSource(img);
+					sourceImage.display();
+				}
+		}
+		else
+		{
+			PlanarImage img = Operators.scale(workImage.getSourceForZoom(),scaleFactor,scaleFactor);
+			workImage.setSource(img);
+			workImage.display();
+			
+			img = Operators.scale(sourceImage.getSourceForZoom(),scaleFactor,scaleFactor);
+			sourceImage.setSource(img);
+			sourceImage.display();
+		}
+	}
+
+	
 
 }

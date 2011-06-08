@@ -149,4 +149,15 @@ public class AppActions {
 		AppToolBar.getInstance().disableButtons();
 		
 	}
+	public static void zoomOut() {
+		float scaleFactor = mainFrame.getScaleFactor();
+		mainFrame.setScaleFactor(scaleFactor-0.2f);
+		mainFrame.getImageFrame().scale(scaleFactor);
+		
+	}
+	public static void zoomIn() {
+		float scaleFactor = mainFrame.getScaleFactor();
+		mainFrame.setScaleFactor(scaleFactor+0.2f);
+		mainFrame.getImageFrame().scale(scaleFactor);
+	}
 }

@@ -5,6 +5,7 @@ import java.awt.image.renderable.ParameterBlock;
 
 import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
+import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
 import javax.media.jai.KernelJAI;
 import javax.media.jai.LookupTableJAI;
@@ -190,6 +191,46 @@ public class Operators {
 		return (PlanarImage) JAI.create("GradientMagnitude", pb);
 	
 	}
+	public static PlanarImage prewitt(PlanarImage source) {
+		float[] prewittVData = {
+			-1.0F, -1.0F, -1.0F,
+			 0.0F, 0.0F, 0.0F,
+			 1.0F, 1.0F, 1.0F
+			};
+			
+		float[] PREWITT_H_DATA = { 
+			 1.0F, 0.0F, -1.0F,
+			 1.0F, 0.0F, -1.0F,
+			 1.0F, 0.0F, -1.0F
+			};
+			
+		KernelJAI prewittKernelV 	= new KernelJAI(3,3,prewittVData);
+		KernelJAI prewittKernelH 	= new KernelJAI(3,3,PREWITT_H_DATA);
+
+		
+		ParameterBlock pb = new ParameterBlock();
+		pb.addSource(source);
+		pb.add(prewittKernelH);
+		pb.add(prewittKernelV);
+		
+		return (PlanarImage) JAI.create("GradientMagnitude", pb);
+	
+	}
+	public static PlanarImage scale(PlanarImage sourceForZoom,float width, float height) {
+
+		PlanarImage rendering;
+		ParameterBlock pb = new ParameterBlock();
+		pb.addSource(sourceForZoom); // The source image
+		pb.add(width); // The xScale
+		pb.add(height); // The yScale
+		pb.add(0.0F); // The x translation
+		pb.add(0.0F); // The y translation
+		pb.add(Interpolation.getInstance(Interpolation.INTERP_BICUBIC_2)); // The
+																			// interpolation
+
+		
+		return JAI.create("scale", pb, null);
+		}
 //
 //	public static PlanarImage houghEllipse(PlanarImage source, final ParameterBlock pb) {
 //				
