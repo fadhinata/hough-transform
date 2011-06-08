@@ -2,8 +2,8 @@ package circledetection.gui.frame;
 
 import java.awt.Dimension;
 
+import javax.media.jai.PlanarImage;
 import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 
 import circledetection.util.Operators;
@@ -13,8 +13,7 @@ public class SingleViewFrame extends ImageFrame {
 	
 	private static SingleViewFrame INSTANCE;
 	private SingleViewFrame(JDesktopPane contentPane, String filePath){
-		super(contentPane,filePath); 
-		imageFrame = new JInternalFrame("Single View Image");
+		super(contentPane,filePath,"Single View Image"); 
 		contentPane.add(imageFrame);
 	}
 	public void show() {
@@ -54,10 +53,7 @@ public class SingleViewFrame extends ImageFrame {
 
 	}
 	
-	public void dispose()
-	{
-		imageFrame.setVisible(false);
-	}
+	
 	public static ImageFrame getInstance(JDesktopPane contentPane,
 			String filePath) {
 		
@@ -67,5 +63,12 @@ public class SingleViewFrame extends ImageFrame {
 	public void setSize(Dimension size) {
 		imageFrame.setSize(size);
 		
+	}
+	
+	@Override
+	public void scale(float scaleFactor) {
+		PlanarImage img = Operators.scale(workImage.getSourceForZoom(),scaleFactor,scaleFactor);
+		workImage.setSource(img);
+		workImage.display();
 	}
 }

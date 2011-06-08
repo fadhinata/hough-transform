@@ -95,7 +95,21 @@ public class AppMenuBar  extends JMenuBar{
 		editMenu.setMargin(insets);
 		JMenu zoom = new JMenu("Zoom");
 		JMenuItem zoomIn = new JMenuItem("Zoom in");
+		zoomIn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AppActions.zoomIn();
+			}
+		});
 		JMenuItem zoomOut = new JMenuItem("Zoom out");
+		zoomOut.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AppActions.zoomOut();
+			}
+		});
 		zoom.add(zoomIn);
 		zoom.add(zoomOut);
 		editMenu.add(zoom);

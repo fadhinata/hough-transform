@@ -45,7 +45,7 @@ public class ApplicationFrame extends JFrame {
 	private AppToolBar toolBar;
 	private static Dimension imagePrefferedSize;
 	private static ApplicationFrame INSTANCE;
-
+	private float scaleFactor = 1.0f;
 
 
 
@@ -105,6 +105,14 @@ public class ApplicationFrame extends JFrame {
 		this.viewMode = viewMode;
 	}
 	
+	public float getScaleFactor() {
+		return scaleFactor;
+	}
+
+	public void setScaleFactor(float scaleFactor) {
+		this.scaleFactor = scaleFactor;
+	}
+
 	public String getFilePath() {
 		return filePath;
 	}
@@ -166,6 +174,7 @@ public class ApplicationFrame extends JFrame {
 		}
 		else{
 			imageFrame = DualViewFrame.getInstance((JDesktopPane)contentPane, filePath);
+			imageFrame.scale(1.0f);
 			
 		}
 		if(workImage != null)
