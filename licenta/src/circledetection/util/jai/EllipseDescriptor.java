@@ -9,11 +9,13 @@
  *
  * Please see COPYING for the complete licence.
  */
-package circledetection.util;
+package circledetection.util.jai;
 
 import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Vector;
+
+import circledetection.util.Utils;
 
 public class EllipseDescriptor 
 {

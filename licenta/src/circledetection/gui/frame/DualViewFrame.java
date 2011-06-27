@@ -7,7 +7,8 @@ import javax.swing.JDesktopPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-import circledetection.gui.ImagePanel;
+import circledetection.PIOperations.GrayScale;
+import circledetection.PIOperations.Operation;
 import circledetection.util.Operators;
 
 public class DualViewFrame extends ImageFrame {
@@ -46,7 +47,8 @@ public class DualViewFrame extends ImageFrame {
 			new Thread() {
 				public void run() {
 					workImage.createImage(filePath);
-					workImage.display(Operators.convertToGrayScale(workImage.getSource()));
+					Operation op = new GrayScale();
+					op.processCommand();
 
 				}
 			}.start();

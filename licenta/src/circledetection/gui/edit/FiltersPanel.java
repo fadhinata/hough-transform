@@ -13,19 +13,19 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import circledetection.gui.ImagePanel;
-import circledetection.gui.frame.ApplicationFrame;
-import circledetection.util.Operators;
+import circledetection.PIOperations.GaussianFilter;
+import circledetection.PIOperations.MedianFilter;
 
-public class FiltersPanel extends JPanel{
+
+public class FiltersPanel extends EditPanelAtom{
 	private JRadioButton xMask,squareMask,plusMask,squareSeparableMask;
 	private ButtonGroup group;
 	private JButton applyMedian;
-	private ApplicationFrame appFrame;
+
 	
 	public FiltersPanel()
 	{
-		appFrame = ApplicationFrame.getInstance();
+	
 		this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
 		initComponents();
 	
@@ -47,7 +47,7 @@ public class FiltersPanel extends JPanel{
 		group.add(plusMask);
 		group.add(squareMask);
 		group.add(squareSeparableMask);
-		group.setSelected(squareSeparableMask.getModel(), true);
+		group.setSelected(xMask.getModel(), true);
 
 		applyMedian = new JButton("Apply ");
 		applyMedian.addActionListener(new ActionListener() {
@@ -67,8 +67,8 @@ public class FiltersPanel extends JPanel{
 				{
 					mask = MedianFilterDescriptor.MEDIAN_MASK_SQUARE_SEPARABLE;
 				}
-				ImagePanel workImage = appFrame.getImageFrame().getWorkImage();
-				workImage.display(Operators.medianFilter(workImage.getSource(),mask));
+				op = new MedianFilter(mask);
+				op.processCommand();
 				
 			}
 		});
@@ -85,8 +85,8 @@ public class FiltersPanel extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ImagePanel workImage = appFrame.getImageFrame().getWorkImage();
-				workImage.display(Operators.gaussianFilter(workImage.getSource()));
+				op = new GaussianFilter();
+				op.processCommand();
 			}
 		});
 		

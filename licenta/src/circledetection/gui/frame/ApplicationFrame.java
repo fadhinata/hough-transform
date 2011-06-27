@@ -15,9 +15,8 @@ import javax.swing.SwingUtilities;
 
 import circledetection.gui.AppMenuBar;
 import circledetection.gui.AppToolBar;
-import circledetection.gui.ImagePanel;
 import circledetection.gui.edit.EditPanel;
-import circledetection.util.JAIOperatorRegister;
+import circledetection.util.jai.JAIOperatorRegister;
 
 @SuppressWarnings("serial")
 public class ApplicationFrame extends JFrame {
@@ -51,7 +50,7 @@ public class ApplicationFrame extends JFrame {
 
 	private ApplicationFrame() {
 
-		super("Circle Detection");
+		super("Ellipse Detection");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		contentPane = new JDesktopPane();
 		this.setContentPane(contentPane);
@@ -174,7 +173,7 @@ public class ApplicationFrame extends JFrame {
 		}
 		else{
 			imageFrame = DualViewFrame.getInstance((JDesktopPane)contentPane, filePath);
-			imageFrame.scale(1.0f);
+//			imageFrame.scale(1.0f);
 			
 		}
 		if(workImage != null)

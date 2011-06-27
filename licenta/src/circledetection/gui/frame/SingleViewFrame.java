@@ -6,6 +6,8 @@ import javax.media.jai.PlanarImage;
 import javax.swing.JDesktopPane;
 import javax.swing.JScrollPane;
 
+import circledetection.PIOperations.GrayScale;
+import circledetection.PIOperations.Operation;
 import circledetection.util.Operators;
 
 
@@ -31,8 +33,8 @@ public class SingleViewFrame extends ImageFrame {
 			new Thread(){
 				public void run(){
 					workImage.createImage(filePath);
-					workImage.display(Operators.convertToGrayScale(workImage.getSource()));
-					
+					Operation op = new GrayScale();
+					op.processCommand();
 				}
 			}.start();
 			

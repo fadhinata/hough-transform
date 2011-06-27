@@ -7,12 +7,11 @@ import java.beans.PropertyVetoException;
 
 import javax.media.jai.PlanarImage;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 
-import circledetection.gui.HistogramChartPanel;
 import circledetection.gui.frame.ApplicationFrame;
+import circledetection.gui.frame.HistogramChartPanel;
 
-public class HistogramPanel extends JPanel implements ActionListener{
+public class HistogramPanel extends EditPanelAtom implements ActionListener{
 
 	private JButton histogram;
 	protected ApplicationFrame appFrame;
