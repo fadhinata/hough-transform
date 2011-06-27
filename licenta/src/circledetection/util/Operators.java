@@ -7,77 +7,23 @@ import javax.media.jai.BorderExtender;
 import javax.media.jai.Histogram;
 import javax.media.jai.Interpolation;
 import javax.media.jai.JAI;
-import javax.media.jai.KernelJAI;
-import javax.media.jai.LookupTableJAI;
 import javax.media.jai.PlanarImage;
-import javax.media.jai.RenderedOp;
-import javax.media.jai.operator.MedianFilterShape;
 
 public class Operators {
 	
-	public static PlanarImage convertToGrayScale(PlanarImage source) {
-		PlanarImage dst = null;
-        double b = 0.0;
-        double[][] matrix = {
-                                { .114D, 0.587D, 0.299D, b },
-                                { .114D, 0.587D, 0.299D, b },
-                                { .114D, 0.587D, 0.299D, b }
-                            };
 
-        if ( source != null ) {
-            ParameterBlock pb = new ParameterBlock();
-            pb.addSource(source);
-            pb.add(matrix);
-            dst = JAI.create("bandcombine", pb, null);
-        }
-
-        return dst;
-	}
+//	public static double[][] getExtrema(PlanarImage source)
+//	{
+//		RenderedOp op = extrema(source);
+//
+//		// // Retrieve both the maximum and minimum pixel value
+////		Histogram hist = createHistogram(source);
+//		double[][] extrema = (double[][]) op.getProperty("extrema");
+//		return extrema;
+//		
+//	}
 
 
-	public static PlanarImage adjustContrast(PlanarImage source,double min, double max) {
-		
-		ParameterBlock pb = null;
-		int bands = source.getSampleModel().getNumBands();
-		double slope;
-		double y_int;
-
-		byte lut[][] = new byte[bands][256];
-		double high =max;
-		double low = min;
-
-		for (int i = 0; i < 256; i++) {
-			for (int j = 0; j < bands; j++) {
-				if (high != low) {
-					slope = 256.0 / (high - low);
-					y_int = 256.0 - slope * high;
-				} else {
-					slope = 0.0;
-					y_int = 0.0;
-				}
-				int value = (int) (slope * i + y_int);
-
-				if (value < (int) low) 
-					value = 0;
-				if (value > (int) high) 
-					value = 255;
-				 else {
-					value &= 0xFF;
-				}
-
-				lut[j][i] = (byte) value;
-			}
-		}
-
-		LookupTableJAI lookup = new LookupTableJAI(lut);
-
-		pb = new ParameterBlock();
-		pb.addSource(source);
-		pb.add(lookup);
-
-		return JAI.create("lookup", pb, null);
-
-	}
 	public static Histogram  createHistogram(PlanarImage img) {
 	    int[] bins = {256, 256, 256};             // The number of bins.
 	     double[] low = {0.0D, 0.0D, 0.0D};        // The low value.
@@ -111,111 +57,47 @@ public class Operators {
 	     PlanarImage dst = (PlanarImage)JAI.create("histogram", pb, null);
 		return dst;
 	}
-	public static PlanarImage medianFilter(PlanarImage img, MedianFilterShape mask) {
-		ParameterBlock pb = new ParameterBlock();
-		pb = new ParameterBlock();
-		pb.addSource(img);
-		pb.add(mask);
-		pb.add(3);
-		return (PlanarImage) JAI.create("MedianFilter", pb);
-
-	 }
-	public static PlanarImage gaussianFilter(PlanarImage img)
-	{
-		 float[] gaussianData ={
-            1.0f, 2.0f, 1.0f,
-            2.0f,  4.0f,2.0f,
-            1.0f, 2.0f, 1.0f
-       };
-		 float weight = 1/16f;
-		 for(int i=0;  i<gaussianData.length; i++){
-			 gaussianData[i] = gaussianData[i] * weight;
-		 }
-		 
-		 KernelJAI gaussianKernel	= new KernelJAI(3,3,gaussianData);
-		 ParameterBlock pb = new ParameterBlock();
-		pb.addSource(img);
-		pb.add(gaussianKernel);
-		return JAI.create("convolve", pb);
-		
-	}
-	public static PlanarImage threshold(PlanarImage source, double[] thresholdValue) {
-		ParameterBlock pb1 = new ParameterBlock();
-		pb1.addSource(source); // The source image
-		pb1.add(null); // The region of the image to scan
-		pb1.add(1); // The horizontal sampling rate
-		pb1.add(1); // The vertical sampling rate
-
-		// Perform the extrema operation on the source image
-		RenderedOp op = JAI.create("extrema", pb1);
-
-		// // Retrieve both the maximum and minimum pixel value
-//		Histogram hist = createHistogram(source);
-		double[] max = (double[]) op.getProperty("maximum");
-		double[] min = thresholdValue;
-		double[] constant = { 255 };
-
-		
-		ParameterBlock pb = new ParameterBlock();
-		pb.addSource(source);
-		pb.add(min);
-//		pb.add(max);
-		pb.add(constant);
-		return JAI.create("BinaryThreshold", pb);
 	
-	}
+
+//	private static RenderedOp extrema(PlanarImage source) {
+//		ParameterBlock pb1 = new ParameterBlock();
+//		pb1.addSource(source); // The source image
+//		pb1.add(null); // The region of the image to scan
+//		pb1.add(1); // The horizontal sampling rate
+//		pb1.add(1); // The vertical sampling rate
+//
+//		// Perform the extrema operation on the source image
+//		RenderedOp op = JAI.create("extrema", pb1);
+//		return op;
+//	}
 	
 	
-	public static PlanarImage sobel(PlanarImage source) {
-		float[] SOBEL_V_DATA = {
-			-1.0F, -2.0F, -1.0F,
-			 0.0F,  0.0F,  0.0F,
-			 1.0F,  2.0F,  1.0F
-			};
-			
-		float[] SOBEL_H_DATA = {
-			 1.0F,  0.0F, -1.0F,
-			 2.0F,  0.0F, -2.0F,
-			 1.0F,  0.0F, -1.0F
-			};
-			
-		KernelJAI SOBEL_V 	= new KernelJAI(3,3,SOBEL_V_DATA);
-		KernelJAI SOBEL_H 	= new KernelJAI(3,3,SOBEL_H_DATA);
 
-		
-		ParameterBlock pb = new ParameterBlock();
-		pb.addSource(source);
-		pb.add(SOBEL_H);
-		pb.add(SOBEL_V);
-		
-		return (PlanarImage) JAI.create("GradientMagnitude", pb);
-	
-	}
-	public static PlanarImage prewitt(PlanarImage source) {
-		float[] prewittVData = {
-			-1.0F, -1.0F, -1.0F,
-			 0.0F, 0.0F, 0.0F,
-			 1.0F, 1.0F, 1.0F
-			};
-			
-		float[] PREWITT_H_DATA = { 
-			 1.0F, 0.0F, -1.0F,
-			 1.0F, 0.0F, -1.0F,
-			 1.0F, 0.0F, -1.0F
-			};
-			
-		KernelJAI prewittKernelV 	= new KernelJAI(3,3,prewittVData);
-		KernelJAI prewittKernelH 	= new KernelJAI(3,3,PREWITT_H_DATA);
-
-		
-		ParameterBlock pb = new ParameterBlock();
-		pb.addSource(source);
-		pb.add(prewittKernelH);
-		pb.add(prewittKernelV);
-		
-		return (PlanarImage) JAI.create("GradientMagnitude", pb);
-	
-	}
+//	public static PlanarImage prewitt(PlanarImage source) {
+//		float[] prewittVData = {
+//			-1.0F, -1.0F, -1.0F,
+//			 0.0F, 0.0F, 0.0F,
+//			 1.0F, 1.0F, 1.0F
+//			};
+//			
+//		float[] PREWITT_H_DATA = { 
+//			 1.0F, 0.0F, -1.0F,
+//			 1.0F, 0.0F, -1.0F,
+//			 1.0F, 0.0F, -1.0F
+//			};
+//			
+//		KernelJAI prewittKernelV 	= new KernelJAI(3,3,prewittVData);
+//		KernelJAI prewittKernelH 	= new KernelJAI(3,3,PREWITT_H_DATA);
+//
+//		
+//		ParameterBlock pb = new ParameterBlock();
+//		pb.addSource(source);
+//		pb.add(prewittKernelH);
+//		pb.add(prewittKernelV);
+//		
+//		return (PlanarImage) JAI.create("GradientMagnitude", pb);
+//	
+//	}
 	public static PlanarImage scale(PlanarImage sourceForZoom,float width, float height) {
 
 		PlanarImage rendering;
@@ -265,5 +147,12 @@ public class Operators {
 //		return detectedData.getImage(); 
 //	}
 //
+//	public static PlanarImage canny(PlanarImage source) {
+//		CannyEdgeDetector ced = new CannyEdgeDetector();
+//		ced.setSourceImage(source);
+//		ced.process();
+//		return ced.getEdgesImage();
+//		
+//	}
 
 }

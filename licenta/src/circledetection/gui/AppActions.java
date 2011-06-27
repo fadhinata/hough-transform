@@ -13,7 +13,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import circledetection.gui.frame.ApplicationFrame;
+import circledetection.gui.frame.HelpFrame;
 import circledetection.gui.frame.ImageFrame;
+import circledetection.util.Cache;
 
 import com.sun.image.codec.jpeg.ImageFormatException;
 import com.sun.image.codec.jpeg.JPEGCodec;
@@ -147,6 +149,7 @@ public class AppActions {
 	public static void closeAction() {
 		mainFrame.getImageFrame().close();
 		AppToolBar.getInstance().disableButtons();
+		Cache.getInstance().clear();
 		
 	}
 	public static void zoomOut() {
@@ -159,5 +162,22 @@ public class AppActions {
 		float scaleFactor = mainFrame.getScaleFactor();
 		mainFrame.setScaleFactor(scaleFactor+0.2f);
 		mainFrame.getImageFrame().scale(scaleFactor);
+	}
+	public static void helpAction() {
+		HelpFrame helpFrame = new HelpFrame();
+		helpFrame.setVisible(true);
+		
+	}
+	public static void aboutAction() {
+		// TODO Auto-generated method stub
+		
+	}
+	public static void undoAction() {
+		Cache.getInstance().undo();
+		
+	}
+	public static void redoAction() {
+		Cache.getInstance().redo();
+		
 	}
 }

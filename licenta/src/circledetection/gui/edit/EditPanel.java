@@ -15,7 +15,7 @@ import javax.swing.JInternalFrame;
 public class EditPanel extends JInternalFrame implements Observer{
 //	private final ApplicationFrame appFrame;
 	private ArrayList<ExtandableAtom> list;
-
+	private EditPanelAtom atomPanel;
 	public EditPanel() {
 //		this.appFrame = ApplicationFrame.getInstance();
 		setTitle("Edit");
@@ -33,58 +33,58 @@ public class EditPanel extends JInternalFrame implements Observer{
 	        gbc.gridy = 0;
 	        gbc.fill = GridBagConstraints.NONE;
 	        gbc.gridwidth = GridBagConstraints.REMAINDER;
-	       
-	        ContrastPanel contrastPanel = new ContrastPanel();
-	        ExtandableAtom contrastAtom = new ExtandableAtom("Contrast", contrastPanel);
+	        
+	        atomPanel = new ContrastPanel();
+	        ExtandableAtom contrastAtom = new ExtandableAtom("Contrast", atomPanel);
 	        list.add(contrastAtom);
 	        contrastAtom.addObserver(this);
 	              
-	        contrastPanel.setVisible(true);
+	        atomPanel.setVisible(true);
 	        contrastAtom.toggleSelection();
 	        this.add(contrastAtom, gbc);
 	        gbc.gridx = GridBagConstraints.RELATIVE;
 	        gbc.gridy = GridBagConstraints.RELATIVE;
 
-	        this.add(contrastPanel, gbc);
+	        this.add(atomPanel, gbc);
 	        
-	        FiltersPanel medianFilterPanel = new FiltersPanel();
-	        ExtandableAtom medianFilterAtom = new ExtandableAtom("Median&Gaussian Filter", medianFilterPanel);
+	        atomPanel = new FiltersPanel();
+	        ExtandableAtom medianFilterAtom = new ExtandableAtom("Median&Gaussian Filter", atomPanel);
 	        list.add(medianFilterAtom); 
 	        medianFilterAtom.addObserver(this);
 	        
 	        this.add(medianFilterAtom, gbc);
-	        this.add(medianFilterPanel, gbc);
-	        medianFilterPanel.setVisible(false);
+	        this.add(atomPanel, gbc);
+	        atomPanel.setVisible(false);
 	       
-	        HistogramPanel histogramPanel = new HistogramPanel();
-	        ExtandableAtom histogramAtom = new ExtandableAtom("Histogram", histogramPanel);
+	        atomPanel = new HistogramPanel();
+	        ExtandableAtom histogramAtom = new ExtandableAtom("Histogram", atomPanel);
 	        list.add(histogramAtom);
 	        histogramAtom.addObserver(this);
 	        
 	        this.add(histogramAtom, gbc);
-	        this.add(histogramPanel, gbc);
-	        histogramPanel.setVisible(false);
+	        this.add(atomPanel, gbc);
+	        atomPanel.setVisible(false);
 
-	        EdgeDetectionPanel edgePanel = new EdgeDetectionPanel();
-	        ExtandableAtom edgeAtom  = new ExtandableAtom("Edge detection", edgePanel);
+	        atomPanel = new EdgeDetectionPanel();
+	        ExtandableAtom edgeAtom  = new ExtandableAtom("Edge detection", atomPanel);
 	        list.add(edgeAtom);
 	        edgeAtom.addObserver(this);
 	        
 	        this.add(edgeAtom,gbc);
-	        this.add(edgePanel,gbc);
-	        edgePanel.setVisible(false);
+	        this.add(atomPanel,gbc);
+	        atomPanel.setVisible(false);
 	        
-	        ThresholdPanel thresholdPanel = new ThresholdPanel();
-	        ExtandableAtom thresholdAtom = new ExtandableAtom("Threshold", thresholdPanel);
+	        atomPanel = new ThresholdPanel();
+	        ExtandableAtom thresholdAtom = new ExtandableAtom("Threshold", atomPanel);
 	        list.add(thresholdAtom);
 	        thresholdAtom.addObserver(this);
 	        
 	        this.add(thresholdAtom, gbc);
-	        this.add(thresholdPanel, gbc);
-	        thresholdPanel.setVisible(false);
+	        this.add(atomPanel, gbc);
+	        atomPanel.setVisible(false);
 	        
 	        
-	        HoughEllipseConfigurationPanel houghPanel = new HoughEllipseConfigurationPanel();
+	        atomPanel = new HoughEllipseConfigurationPanel();
 			ParameterBlock pb = new ParameterBlock();
 			pb.add(59); // minA - big radius range
 			pb.add(71); // maxA
@@ -93,14 +93,14 @@ public class EditPanel extends JInternalFrame implements Observer{
 			pb.add(100); // the quality of the detected ellipse
 			pb.add(5000); // threshold
 		
-			houghPanel.setParameters(pb);
-	        ExtandableAtom houghAtom = new ExtandableAtom("Hough Transform", houghPanel);
+			((HoughEllipseConfigurationPanel)atomPanel).setParameters(pb);
+	        ExtandableAtom houghAtom = new ExtandableAtom("Hough Transform", atomPanel);
 	        list.add(houghAtom);
 	        houghAtom.addObserver(this);
 	        
 	        this.add(houghAtom,gbc);
-	        this.add(houghPanel,gbc);
-	        houghPanel.setVisible(false);
+	        this.add(atomPanel,gbc);
+	        atomPanel.setVisible(false);
 
 
 	}

@@ -91,6 +91,7 @@ public class AppToolBar extends JToolBar {
         edit = new JButton(new ImageIcon(IMG_FOLDER + EDIT));
         edit.setText("Edit");
         edit.setToolTipText("Open edit frame");
+        
         edit.addActionListener(new ActionListener() {
 			
 			@Override
@@ -104,11 +105,28 @@ public class AppToolBar extends JToolBar {
         
         undo = new JButton(new ImageIcon(IMG_FOLDER + UNDO));
         undo.setToolTipText("Undo");
-        
+        undo.setEnabled(false);
+        undo.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AppActions.undoAction();
+				
+			}
+		});
         this.add(undo);
        
         redo = new JButton(new ImageIcon(IMG_FOLDER + REDO)); 
         redo.setToolTipText("Redo");
+        redo.setEnabled(false);
+        redo.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AppActions.redoAction();
+				
+			}
+		});
         this.add(redo);
         
         this.addSeparator();
@@ -183,8 +201,23 @@ public class AppToolBar extends JToolBar {
 		close.setEnabled(flag);
 		zoomIn.setEnabled(flag);
 		zoomOut.setEnabled(flag);
-		undo.setEnabled(flag);
-		redo.setEnabled(flag);
+		
+	}
+	public void disableUndo()
+	{
+		undo.setEnabled(false);
+	}
+	public void enableUndo()
+	{
+		undo.setEnabled(true);
+	}
+	public void disableRedo()
+	{
+		redo.setEnabled(false);
+	}
+	public void enableRedo()
+	{
+		redo.setEnabled(true);
 	}
 
 }

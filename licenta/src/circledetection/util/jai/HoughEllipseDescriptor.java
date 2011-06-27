@@ -9,7 +9,7 @@
  *
  * Please see COPYING for the complete licence.
  */
-package circledetection.util;
+package circledetection.util.jai;
 
 import java.awt.RenderingHints;
 import java.awt.image.RenderedImage;
@@ -17,10 +17,7 @@ import java.awt.image.renderable.ParameterBlock;
 import java.awt.image.renderable.RenderedImageFactory;
 
 import javax.media.jai.ImageLayout;
-import javax.media.jai.JAI;
 import javax.media.jai.OperationDescriptorImpl;
-
-import org.jfree.chart.plot.ThermometerPlot;
 
 class HoughEllipseDescriptor extends OperationDescriptorImpl implements RenderedImageFactory
 {	
@@ -43,7 +40,7 @@ class HoughEllipseDescriptor extends OperationDescriptorImpl implements Rendered
     @SuppressWarnings("unchecked")
 	private static final Class[] paramClasses = { java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class ,java.lang.Integer.class , java.lang.Float.class, Boolean.class};
 
-    private static final Object[] paramDefaults = { new Integer(100), new Integer(130), new Integer(50), new Integer(60), new Integer(180), new Integer(1000), new Float(0.2), new Boolean(true)};
+    private static final Object[] paramDefaults = { new Integer(100), new Integer(130), new Integer(50), new Integer(60), new Integer(180), new Integer(1000), new Float(2.0), new Boolean(true)};
 
 
     public HoughEllipseDescriptor()

@@ -13,6 +13,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 
 import circledetection.gui.frame.ApplicationFrame;
 
@@ -36,6 +37,31 @@ public class AppMenuBar  extends JMenuBar{
 		fileMenu();
 		editMenu();
 		viewMenu();
+		helpMenu();
+	}
+	private void helpMenu() {
+		final JMenu helpMenu = new JMenu("Help");
+		helpMenu.setMargin(insets);
+		JMenuItem help = new JMenuItem("Help");
+		help.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AppActions.helpAction();
+			}
+		});
+		JMenuItem about = new JMenuItem("About");
+		about.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AppActions.aboutAction();
+			}
+		});
+		helpMenu.add(help);
+		helpMenu.add(new JSeparator());
+		helpMenu.add(about);
+		add(helpMenu);
 	}
 	private void viewMenu() {
 	

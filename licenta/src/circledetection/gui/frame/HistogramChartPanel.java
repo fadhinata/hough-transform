@@ -1,4 +1,4 @@
-package circledetection.gui;
+package circledetection.gui.frame;
 
 import java.awt.Color;
 import java.awt.image.Raster;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--AgileJ Ltd. (http://www.agilej.com)-->
+<ajsv>
+    <diagram style="highlightInterfacesDiagramStyle" version="1.7.4.v20110506-1155">
+        <class className="circledetection.gui.frame.ApplicationFrame" project="licenta" xLocation="-91" yLocation="-472"/>
+        <class className="circledetection.gui.frame.DualViewFrame" project="licenta" xLocation="-30" yLocation="116"/>
+        <class className="circledetection.gui.frame.HistogramChartPanel" project="licenta" xLocation="619" yLocation="160"/>
+        <class className="circledetection.gui.frame.ImageFrame" project="licenta" xLocation="334" yLocation="-143"/>
+        <class className="circledetection.gui.frame.ImagePanel" project="licenta" xLocation="133" yLocation="-310"/>
+        <class className="circledetection.gui.frame.SingleViewFrame" project="licenta" xLocation="619" yLocation="-29"/>
+    </diagram>
+</ajsv>

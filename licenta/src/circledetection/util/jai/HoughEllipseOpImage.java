@@ -9,7 +9,7 @@
  *
  * Please see COPYING for the complete licence.
  */
-package circledetection.util;
+package circledetection.util.jai;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -18,14 +18,14 @@ import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.media.jai.ImageLayout;
 import javax.media.jai.PlanarImage;
-import javax.media.jai.TileComputationListener;
 import javax.media.jai.UntiledOpImage;
 import javax.swing.SwingUtilities;
+
+import circledetection.util.Utils;
 
 /** Find ellipses in an image with a Hough transform.
  */
@@ -113,13 +113,13 @@ class HoughEllipseOpImage  extends UntiledOpImage
     	}
         int step =0;
         if(edgeCoordinates.length <5000)
-        	step = 10;
-        if(edgeCoordinates.length>= 5000 & edgeCoordinates.length <=25000)
         	step = 50;
-        if(edgeCoordinates.length >25000)
+        if(edgeCoordinates.length>= 5000 & edgeCoordinates.length <=25000)
         	step = 100;
+        if(edgeCoordinates.length >25000)
+        	step = 250;
         if(edgeCoordinates.length >50000)
-        	step=150;
+        	step=500;
         //if(edgePoints > 3000)
         //	maxPairs = 1300;
         	
@@ -155,7 +155,7 @@ class HoughEllipseOpImage  extends UntiledOpImage
 //
 //			if (idleStopCounter++ >= this.IDLE_STOP_SEARCH)
 //				break;
-		for (p1 = 0; p1 < edgeCoordinates.length; p1++) {
+		for (p1 = 0; p1 < edgeCoordinates.length; p1 ++) {
 			if (edgeCoordinates[p1][2] == 0)
 				continue;
 			for (p2 = p1; p2 < edgeCoordinates.length; p2 += step) {
@@ -170,8 +170,12 @@ class HoughEllipseOpImage  extends UntiledOpImage
 					currentPair++;
 					dst.setSample((int) edgeCoordinates[p1][0],
 							(int) edgeCoordinates[p1][1], 0, Utils.WHITE);
+					dst.setSample((int) edgeCoordinates[p1][0],
+							(int) edgeCoordinates[p1][1], 3, Utils.WHITE);
 					dst.setSample((int) edgeCoordinates[p2][0],
 							(int) edgeCoordinates[p2][1], 0, Utils.WHITE);
+					dst.setSample((int) edgeCoordinates[p1][0],
+							(int) edgeCoordinates[p1][1], 3, Utils.WHITE);
 
 					cx = (edgeCoordinates[p1][0] + edgeCoordinates[p2][0]) / 2.0;
 					cy = (edgeCoordinates[p1][1] + edgeCoordinates[p2][1]) / 2.0;
@@ -219,7 +223,7 @@ class HoughEllipseOpImage  extends UntiledOpImage
 								p1, p2, cx, cy, a, houghMinorLength);
 
 						// rem pixels of ellipse from edge array
-						removeEllipse(edgeCoordinates, ellipse);
+						//removeEllipse(edgeCoordinates, ellipse);
 
 						// idleStopCounter = 0;
 					}
@@ -260,9 +264,12 @@ class HoughEllipseOpImage  extends UntiledOpImage
 			drawPixel(0,(int)desc.getCenter().getX(),(int)desc.getCenter().getY(),dst,5);
 			drawPixel(1,(int)desc.getCenter().getX(),(int)desc.getCenter().getY(),dst,5);
 			drawPixel(2,(int)desc.getCenter().getX(),(int)desc.getCenter().getY(),dst,5);
-			
+			drawPixel(3,(int)desc.getCenter().getX(),(int)desc.getCenter().getY(),dst,5);
 			drawPixel(1,(int)desc.getVertex1().getX(),(int)desc.getVertex1().getY(),dst,5);
 			drawPixel(1,(int)desc.getVertex2().getX(),(int)desc.getVertex2().getY(),dst,5);
+			drawPixel(3,(int)desc.getVertex1().getX(),(int)desc.getVertex1().getY(),dst,5);
+			drawPixel(3,(int)desc.getVertex2().getX(),(int)desc.getVertex2().getY(),dst,5);
+		
 			if(this.debug) {
 				System.out.println(desc.toString());
 			}

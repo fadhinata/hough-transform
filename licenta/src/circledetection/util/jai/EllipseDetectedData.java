@@ -1,4 +1,4 @@
-package circledetection.util;
+package circledetection.util.jai;
 
 import java.util.List;
 

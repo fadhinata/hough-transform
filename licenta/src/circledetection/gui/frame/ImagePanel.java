@@ -1,4 +1,4 @@
-package circledetection.gui;
+package circledetection.gui.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -112,6 +112,18 @@ public class ImagePanel extends JPanel  {
 	public void clear() {
 		source = null;
 		sourceForZoom = null;
+		
+	}
+
+	public void display(BufferedImage image) {
+	
+		BufferedImage buffer = new BufferedImage(image.getWidth(), image.getHeight(),BufferedImage.TYPE_INT_RGB);
+		Graphics2D graphics	=	(Graphics2D)buffer.getGraphics();
+		graphics.drawImage(image, 0, 0, null);
+		graphics.dispose();
+		this.img.setIcon(new ImageIcon(buffer) );		
+		this.img.repaint();
+		this.setSize(new Dimension(image.getWidth(),image.getHeight()));
 		
 	}
 	

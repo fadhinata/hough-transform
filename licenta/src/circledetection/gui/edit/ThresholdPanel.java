@@ -9,23 +9,20 @@ import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-import circledetection.gui.ImagePanel;
+import circledetection.PIOperations.Threshold;
 import circledetection.gui.frame.ApplicationFrame;
+import circledetection.gui.frame.ImagePanel;
 import circledetection.util.Operators;
 
-public class ThresholdPanel extends JPanel {
+public class ThresholdPanel extends EditPanelAtom {
 	private JButton threshold;
 	private JRadioButton maxEntropy,maxVariance,minError,minFuzziness,mode,pTile,iterative;
 	private JTextField value;
 	private JTextField parameter;
 	private ButtonGroup group;
-	protected ApplicationFrame appFrame;
 	private ImagePanel workImage;
 	private Histogram hist;
 	private JLabel parameterLabel;
@@ -33,7 +30,7 @@ public class ThresholdPanel extends JPanel {
 	protected double[] thresholdValue;
 
 	public ThresholdPanel(){
-		appFrame = ApplicationFrame.getInstance();
+		
 		this.setLayout(new GridLayout(13,1));
 		initComponents();
 	}
@@ -41,7 +38,6 @@ public class ThresholdPanel extends JPanel {
 	{
 		
 		initRadioButtons();
-		
 		parameterLabel = new JLabel();
 		parameterLabel.setVisible(false);
 		this.add(parameterLabel);
@@ -56,7 +52,8 @@ public class ThresholdPanel extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				workImage = appFrame.getImageFrame().getWorkImage();
+			
+				workImage = ApplicationFrame.getInstance().getImageFrame().getWorkImage();
 				hist = Operators.createHistogram(workImage.getSource());
 
 				ButtonModel buttonModel = group.getSelection();
@@ -110,9 +107,8 @@ public class ThresholdPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				
-				workImage.display(Operators.threshold(workImage.getSource(),thresholdValue));
-
+				op = new Threshold(thresholdValue[0]);
+				op.processCommand();
 			}		});
 		this.add(threshold);
 	}

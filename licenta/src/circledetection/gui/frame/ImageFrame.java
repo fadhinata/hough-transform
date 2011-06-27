@@ -6,7 +6,6 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
-import circledetection.gui.ImagePanel;
 
 public abstract class ImageFrame {
 
